@@ -10,12 +10,13 @@ from hzltfw.core.plugin import (
     PluginContext,
 )
 from hzltfw.core.workspace import case_workspace_path
+from hzltfw.plugins.file_type import FileTypePlugin
 from hzltfw.plugins.hash_manifest import HashManifestPlugin
 from hzltfw.utils.timestamps import utc_now
 
 
 def default_plugins() -> list[BasePlugin]:
-    return [HashManifestPlugin()]
+    return [HashManifestPlugin(), FileTypePlugin()]
 
 
 def run_plugins_for_evidence(

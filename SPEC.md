@@ -23,7 +23,7 @@ A student is suspected of leaking course material. The prepared evidence sample 
 | Plugin | Purpose | MVP Status |
 | --- | --- | --- |
 | `hash_manifest` | MD5/SHA1/SHA256 and file manifest | Required |
-| `file_type` | Magic-byte detection and extension mismatch | Required |
+| `file_type` | Magic-byte detection and extension mismatch | Required, example FilePlugin |
 | `archive_index` | ZIP/TAR index and suspicious archive entry review | Required |
 | `metadata_extract` | EXIF, PDF, and Office metadata | Required |
 | `keyword_search` | Keyword and regex hits | Required |

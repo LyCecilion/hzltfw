@@ -10,6 +10,7 @@ from hzltfw.core.runner import run_plugins_for_evidence
 from hzltfw.core.scanner import scan_evidence
 
 EXPECTED_FILE_COUNT = 2
+EXPECTED_DEFAULT_PLUGIN_COUNT = 2
 
 
 def test_import_version() -> None:
@@ -20,6 +21,7 @@ def test_vertical_slice(tmp_path: Path) -> None:
     evidence_dir = tmp_path / "sample_evidence"
     evidence_dir.mkdir()
     (evidence_dir / "notes.txt").write_text("course material leak", encoding="utf-8")
+    (evidence_dir / "fake.jpg").write_bytes(b"%PDF-1.7\n% fake pdf")
     (evidence_dir / "nested").mkdir()
     (evidence_dir / "nested" / "readme.txt").write_text("hello", encoding="utf-8")
 
@@ -47,15 +49,26 @@ def test_vertical_slice(tmp_path: Path) -> None:
         session.refresh(evidence)
 
         files = scan_evidence(session, evidence)
-        assert len(files) == EXPECTED_FILE_COUNT
+        assert len(files) == EXPECTED_FILE_COUNT + 1
 
         runs = run_plugins_for_evidence(session, evidence.id or 0)
-        assert len(runs) == 1
-        assert runs[0].status == "success"
+        assert len(runs) == EXPECTED_DEFAULT_PLUGIN_COUNT
+        assert all(run.status == "success" for run in runs)
 
-        artifact = session.exec(select(Artifact)).one()
-        assert artifact.artifact_type == "hash.manifest"
-        assert artifact.data_json["file_count"] == EXPECTED_FILE_COUNT
+        artifacts = list(session.exec(select(Artifact)))
+        manifest = next(
+            artifact
+            for artifact in artifacts
+            if artifact.artifact_type == "hash.manifest"
+        )
+        mismatch = next(
+            artifact
+            for artifact in artifacts
+            if artifact.artifact_type == "file.type_mismatch"
+        )
+        assert manifest.data_json["file_count"] == EXPECTED_FILE_COUNT + 1
+        assert mismatch.source_path == "fake.jpg"
+        assert mismatch.severity == "medium"
 
         assert session.exec(select(EvidenceFile)).first() is not None
         assert session.exec(select(PluginRun)).first() is not None
@@ -70,3 +83,4 @@ def test_vertical_slice(tmp_path: Path) -> None:
     report = report_path.read_text(encoding="utf-8")
     assert "Electronic Data Forensics Analysis Report" in report
     assert "hash_manifest" in report
+    assert "file_type" in report

@@ -43,6 +43,9 @@ All feature work goes through pull requests. Do not push directly to `main`.
 See [CONTRIBUTING.md](CONTRIBUTING.md) for the lightweight Git workflow,
 branch naming rules, PR checklist, and AI coding rules.
 
+Plugin work should follow [PLUGIN_CONTACT.md](PLUGIN_CONTACT.md) and
+[PLUGIN_TASKS.md](PLUGIN_TASKS.md).
+
 With Determinate Nix or another flakes-enabled Nix:
 
 ```bash
