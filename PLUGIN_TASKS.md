@@ -1,5 +1,7 @@
 # Plugin Tasks
 
+[中文](PLUGIN_TASKS.zh-CN.md)
+
 This file defines the expected plugin work for the MVP. Use it to create GitHub issues and PR checklists.
 
 ## Common Completion Rules

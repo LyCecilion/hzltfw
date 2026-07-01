@@ -1,5 +1,7 @@
 # Contributing
 
+[中文](CONTRIBUTING.zh-CN.md)
+
 This project uses a lightweight PR-based workflow. Do not push feature work directly to `main`.
 
 ## Branch Model

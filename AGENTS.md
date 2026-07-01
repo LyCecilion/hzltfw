@@ -1,5 +1,7 @@
 # AGENTS.md
 
+[中文](AGENTS.zh-CN.md)
+
 This repository is the Hazelita Forensics Workbench (`hzltfw`), a course-oriented local digital forensics workbench. AI coding agents must keep the project stable for a short-team deadline and avoid architecture drift.
 
 - 以瞎猜接口为耻，以认真查询为荣。

@@ -1,5 +1,7 @@
 # Plugin Contract
 
+[中文](PLUGIN_CONTACT.zh-CN.md)
+
 This document is the required reference for plugin authors.
 
 ## Hard Rules

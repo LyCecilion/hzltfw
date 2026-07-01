@@ -1,5 +1,7 @@
 # Hazelita Forensics Workbench
 
+[中文](README.zh-CN.md)
+
 `hzltfw` is a local digital forensics workbench for electronic data forensics course practice. The first deliverable focuses on a stable live-demonstration flow: create a case, add a prepared Windows-style evidence sample, run analysis plugins, inspect artifacts in a GUI, and export a Markdown report.
 
 ## MVP Flow
