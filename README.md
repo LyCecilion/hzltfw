@@ -1,92 +1,79 @@
-<!--markdownlint-disable MD033 MD036 MD041-->
-
-<div align="center">
-
 # Hazelita Forensics Workbench
 
-**适用于电子数据取证实训场景的跨平台本地取证工具集系统**
+`hzltfw` is a local digital forensics workbench for electronic data forensics course practice. The first deliverable focuses on a stable live-demonstration flow: create a case, add a prepared Windows-style evidence sample, run analysis plugins, inspect artifacts in a GUI, and export a Markdown report.
 
-</div>
+## MVP Flow
 
-## 简介
+1. Create a case.
+2. Add file or directory evidence.
+3. Scan evidence into `evidence_files`.
+4. Run selected analysis plugins.
+5. Store normalized artifacts.
+6. Review artifacts and timeline-capable results in the GUI.
+7. Export a Markdown forensics report.
 
-`hzltfw`（Hazelita Forensics Workbench）是一款面向教学与快速研判场景的跨平台电子数据取证工具集系统，支持导入证据目录、文件、压缩包、浏览器数据、日志文件等，自动调用多个插件提取取证结果并生成报告。`hzltfw` 的理念是使用小的核心，将成熟工具和解析逻辑编排成完整和有系统概念的取证工作台。
+## Technology
 
-## 技术栈
-
-### 后端编排
-
-- Python 3.13
-- SQLite + SQLModel/SQLAlchemy
-
-### 前端展示
-
+- Python 3.12+
+- uv
 - NiceGUI
-
-### 开发
-
+- SQLite
+- SQLModel
 - ruff
 - pytest
-- uv
+- Optional Nix development shell through `flake.nix`
 
-## 系统流程设计
+## Development
 
-1. 创建案件
-2. 添加证据
-3. 计算哈希并登记元数据
-4. 选择/运行分析插件
-5. 结果入库
-6. 时间线/关键词/文件/应用痕迹查看
-7. 导出报告
+```bash
+uv sync --dev
+uv run hzltfw
+```
 
-## 功能范围
+Run checks:
 
-### 核心能力
+```bash
+uv run ruff check .
+uv run pytest
+```
 
-**案件管理** 新建案件；案件编号、名称、创建人、描述；案件列表和详情页。
+## Collaboration
 
-**证据添加** 添加文件、目录、压缩包；记录证据来源、导入时间、操作者；可选复制到工作区。
+All feature work goes through pull requests. Do not push directly to `main`.
+See [CONTRIBUTING.md](CONTRIBUTING.md) for the lightweight Git workflow,
+branch naming rules, PR checklist, and AI coding rules.
 
-**哈希校验** MD5/SHA1/SHA256；生成 evidence manifest；展示证据完整性信息。
+With Determinate Nix or another flakes-enabled Nix:
 
-**文件类型识别** 根据 magic bytes 判断真实类型；检测扩展名不一致的文件。
+```bash
+nix develop
+uv sync --dev
+```
 
-**统一结果查看** 所有插件结果进入 artifact 表；支持按插件、类型、时间、关键词筛选。
+## Planned Tool Capabilities
 
-**报告导出** 导出 `.md` 和/或 `.html`。报告包含案件信息、证据哈希、工具运行结果、关键发现等。
+The course requirement is counted as tool capabilities, not plugin count. The MVP targets these capabilities through a small plugin set:
 
-### 插件能力
+| Capability | Module |
+| --- | --- |
+| Case creation | core/UI |
+| Evidence import | core/UI |
+| Evidence directory scan | scanner |
+| File manifest generation | `hash_manifest` |
+| MD5 calculation | `hash_manifest` |
+| SHA1 calculation | `hash_manifest` |
+| SHA256 calculation | `hash_manifest` |
+| File size and timestamp collection | scanner |
+| Magic-byte file type detection | `file_type` |
+| Extension mismatch detection | `file_type` |
+| Keyword search | `keyword_search` |
+| Regex search | `keyword_search` |
+| Image EXIF extraction | `metadata_extract` |
+| PDF metadata extraction | `metadata_extract` |
+| Archive index | `archive_index` |
+| Timeline generation | artifact/report aggregation |
+| Chromium History parsing | `browser_history` bonus |
+| Unified artifact review | UI |
+| Markdown report export | report generator |
 
-| 插件                     | 难度 | 展示效果 | 说明                               |
-| ------------------------ | ---: | -------: | ---------------------------------- |
-| 哈希计算                 |   低 |       中 | MD5/SHA1/SHA256                    |
-| 文件类型识别             |   低 |       中 | 扩展名伪装检测                     |
-| 元数据提取               |   中 |       高 | 图片 EXIF、PDF、Office 基本信息    |
-| 关键词搜索               |   低 |       高 | 支持普通关键词和正则               |
-| 字符串提取               |   低 |       中 | 从二进制中提取 ASCII/UTF-16 字符串 |
-| 时间线生成               |   中 |       高 | 文件 mtime/ctime + 插件时间字段    |
-| 重复文件检测             |   低 |       中 | 基于 hash                          |
-| 压缩包扫描               |   中 |       中 | zip/7z/tar 列表与递归提取          |
-| SQLite 数据库查看        |   中 |       高 | 展示表、字段、行数                 |
-| Chromium 历史记录解析    |   中 |     很高 | Chrome/Edge History                |
-| Firefox 历史记录解析     |   中 |     很高 | places.sqlite                      |
-| Windows LNK 解析         |   中 |       高 | 快捷方式目标路径、时间             |
-| Windows 回收站 `$I` 解析 |   中 |       高 | 原路径、删除时间                   |
-| EVTX 事件日志解析        |   高 |       高 | 用库解析，不要自己写二进制         |
-| YARA 扫描                |   中 |       高 | 可作为「可疑文件检测」             |
-
-## 系统分层
-
-`hzltfw` 采用三层架构。
-
-### UI 层
-
-NiceGUI 页面、页面、表格、按钮、进度显示。
-
-### 业务层
-
-案件、证据、插件调度、报告生成。
-
-### 插件层
-
-各种 parser/wrapper。
+`browser_history` is a bonus feature. If it is not stable by Day 5, it should remain planned or experimental and must not block the main flow.
