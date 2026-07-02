@@ -10,7 +10,7 @@ from hzltfw.core.runner import run_plugins_for_evidence
 from hzltfw.core.scanner import scan_evidence
 
 EXPECTED_FILE_COUNT = 2
-EXPECTED_DEFAULT_PLUGIN_COUNT = 2
+EXPECTED_DEFAULT_PLUGIN_COUNT = 3
 
 
 def test_import_version() -> None:
@@ -20,7 +20,13 @@ def test_import_version() -> None:
 def test_vertical_slice(tmp_path: Path) -> None:
     evidence_dir = tmp_path / "sample_evidence"
     evidence_dir.mkdir()
-    (evidence_dir / "notes.txt").write_text("course material leak", encoding="utf-8")
+    (evidence_dir / "notes.txt").write_text(
+        "course material leak\n"
+        "contact: demo@example.test\n"
+        "phone: 13800138000\n"
+        "student id: 25212345678\n",
+        encoding="utf-8",
+    )
     (evidence_dir / "fake.jpg").write_bytes(b"%PDF-1.7\n% fake pdf")
     (evidence_dir / "nested").mkdir()
     (evidence_dir / "nested" / "readme.txt").write_text("hello", encoding="utf-8")
@@ -66,9 +72,21 @@ def test_vertical_slice(tmp_path: Path) -> None:
             for artifact in artifacts
             if artifact.artifact_type == "file.type_mismatch"
         )
+        regex_hits = [
+            artifact
+            for artifact in artifacts
+            if artifact.artifact_type == "keyword.regex_hit"
+        ]
         assert manifest.data_json["file_count"] == EXPECTED_FILE_COUNT + 1
         assert mismatch.source_path == "fake.jpg"
         assert mismatch.severity == "medium"
+        assert {artifact.data_json["rule"] for artifact in regex_hits} == {
+            "email",
+            "phone_cn",
+            "student_id",
+        }
+        assert all(artifact.is_key for artifact in regex_hits)
+        assert all(artifact.severity == "medium" for artifact in regex_hits)
 
         assert session.exec(select(EvidenceFile)).first() is not None
         assert session.exec(select(PluginRun)).first() is not None
@@ -84,3 +102,4 @@ def test_vertical_slice(tmp_path: Path) -> None:
     assert "Electronic Data Forensics Analysis Report" in report
     assert "hash_manifest" in report
     assert "file_type" in report
+    assert "keyword_search" in report
