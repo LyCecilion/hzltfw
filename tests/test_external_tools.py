@@ -16,6 +16,7 @@ from hzltfw.core.database import create_db_engine, init_db
 from hzltfw.core.external_probe import probe_external_input
 from hzltfw.core.external_tools import check_tool_health, run_external_tool
 from hzltfw.core.models import Artifact, Case, EvidenceItem
+from hzltfw.core.report import export_case_report_bundle
 from hzltfw.core.runner import run_plugins_for_evidence
 from hzltfw.core.scanner import scan_evidence
 from hzltfw.plugins.external_forensics import ExternalForensicsPlugin
@@ -159,6 +160,55 @@ def test_external_forensics_plugin_creates_report_artifact(tmp_path: Path) -> No
     assert artifacts[0].artifact_type == "external.report"
     assert artifacts[0].data_json["tool_name"] == "aleapp"
     assert Path(artifacts[0].data_json["report_path"]).name == "index.html"
+
+
+def test_report_bundle_copies_external_outputs(tmp_path: Path) -> None:
+    evidence_dir = tmp_path / "android"
+    (evidence_dir / "data" / "data" / "com.android.chrome").mkdir(parents=True)
+    tool = ExternalToolConfig(
+        name="aleapp",
+        command=[sys.executable, str(_write_fake_tool(tmp_path))],
+    )
+    engine = create_db_engine(f"sqlite:///{tmp_path / 'bundle.db'}")
+    init_db(engine)
+
+    with Session(engine) as session:
+        case = Case(case_no="CASE-BUNDLE", name="Bundle Test")
+        session.add(case)
+        session.commit()
+        session.refresh(case)
+        evidence = EvidenceItem(
+            case_id=case.id or 0,
+            name="android",
+            source_path=str(evidence_dir),
+            evidence_type="directory",
+        )
+        session.add(evidence)
+        session.commit()
+        session.refresh(evidence)
+        scan_evidence(session, evidence)
+        run_plugins_for_evidence(
+            session,
+            evidence.id or 0,
+            plugins=[
+                ExternalForensicsPlugin(
+                    "aleapp",
+                    input_type="fs",
+                    tool_config=tool,
+                ),
+            ],
+        )
+
+        report_path = export_case_report_bundle(
+            session,
+            case.id or 0,
+            tmp_path / "bundle",
+        )
+
+    report = report_path.read_text(encoding="utf-8")
+    assert "External Tool Reports" in report
+    assert "external/aleapp/run-" in report
+    assert next((tmp_path / "bundle" / "external").rglob("index.html")).exists()
 
 
 def _write_fake_tool(tmp_path: Path) -> Path:
