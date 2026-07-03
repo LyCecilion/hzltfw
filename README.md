@@ -50,6 +50,8 @@ Plugin work should follow [docs/PLUGIN_CONTACT.md](docs/PLUGIN_CONTACT.md) and
 For Windows image or E01-based coursework, export selected files first and use
 [docs/EVIDENCE_HANDOFF.md](docs/EVIDENCE_HANDOFF.md) to inspect the exported
 directory.
+For ALEAPP, iLEAPP, Hindsight, and report-bundle workflows, see
+[docs/EXTERNAL_TOOLS.md](docs/EXTERNAL_TOOLS.md).
 
 With Determinate Nix or another flakes-enabled Nix:
 
@@ -85,5 +87,7 @@ The course requirement is counted as tool capabilities, not plugin count. The MV
 | Chromium History parsing | `browser_history` bonus |
 | Unified artifact review | UI |
 | Markdown report export | report generator |
+| External ALEAPP/iLEAPP/Hindsight adapters | `external_forensics` |
+| Portable report bundle export | report generator |
 
 `browser_history` is a bonus feature. If it is not stable by Day 5, it should remain planned or experimental and must not block the main flow.

@@ -162,3 +162,27 @@ MVP 完成标准：
 砍功能规则：
 
 - 如果 Day 5 结束还不稳定，就保留为 planned/experimental，并从现场演示主线移除。
+
+## `external_forensics`
+
+状态：已实现为可选外部工具适配器。
+
+插件类型：`EvidencePlugin`。
+
+用途：
+
+- 运行本机配置好的 ALEAPP、iLEAPP 或 Hindsight 命令。
+- 将外部工具输出保存在 hzltfw 工作区。
+- 产出报告链接和摘要 artifact，不全量导入外部工具所有结果。
+
+Artifact 类型：
+
+- `external.report`
+- `external.highlight`
+
+MVP 完成标准：
+
+- 外部命令缺失时通过 health check 报告，不影响主流程。
+- fake external tool 测试能产出 `external.report` artifact。
+- 报告包会复制外部输出目录，并在 `report.md` 中链接。
+- Windows 和 Linux 用户都可以用不依赖 shell 语法的命令数组配置工具。

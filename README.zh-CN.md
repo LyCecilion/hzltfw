@@ -55,6 +55,8 @@ uv sync --dev
 插件开发应遵守 [docs/PLUGIN_CONTACT.zh-CN.md](docs/PLUGIN_CONTACT.zh-CN.md) 和 [docs/PLUGIN_TASKS.zh-CN.md](docs/PLUGIN_TASKS.zh-CN.md)。
 如果课程样本来自 Windows 镜像或 E01，请先导出选定文件，并使用
 [docs/EVIDENCE_HANDOFF.zh-CN.md](docs/EVIDENCE_HANDOFF.zh-CN.md) 检查导出目录。
+ALEAPP、iLEAPP、Hindsight 和报告包导出说明见
+[docs/EXTERNAL_TOOLS.zh-CN.md](docs/EXTERNAL_TOOLS.zh-CN.md)。
 
 ## 计划工具能力
 
@@ -83,5 +85,7 @@ uv sync --dev
 | Chromium 历史记录解析 | `browser_history` 加分项 |
 | 统一 artifact 查看 | UI |
 | Markdown 报告导出 | report generator |
+| 外部 ALEAPP/iLEAPP/Hindsight 适配 | `external_forensics` |
+| 可携带报告包导出 | report generator |
 
 `browser_history` 是加分项。如果 Day 5 结束时仍不稳定，应保留为 planned/experimental，不得阻塞主流程。

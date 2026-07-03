@@ -27,6 +27,7 @@ A student is suspected of leaking course material. The prepared evidence sample 
 | `keyword_search` | Built-in demo regex hits | Implemented |
 | `archive_index` | ZIP index and suspicious archive entry review | Implemented |
 | `metadata_extract` | Image EXIF, PDF metadata, and DOCX core properties | Implemented |
+| `external_forensics` | ALEAPP, iLEAPP, and Hindsight adapters | Implemented optional feature |
 | `handoff` | Inspect exported Windows evidence directories from Evidence page | Implemented support feature |
 | `timeline` | Time-based artifact/report aggregation | Implemented through report aggregation |
 | `browser_history` | Chromium History parsing | Bonus/planned |
@@ -55,6 +56,8 @@ A student is suspected of leaking course material. The prepared evidence sample 
 | Artifact review | artifacts GUI page |
 | Timeline generation | report/UI artifact aggregation |
 | Markdown report export | report generator |
+| Portable report bundle export | report generator |
+| ALEAPP/iLEAPP/Hindsight external reports | `external_forensics` |
 | Chromium History | `browser_history`, bonus |
 
 ## Degradation Rules
@@ -63,6 +66,7 @@ A student is suspected of leaking course material. The prepared evidence sample 
 - If `browser_history` is incomplete by the end of Day 5, remove it from the live demo path and keep it as planned or experimental.
 - Archive recursion and extraction are not required for MVP. The current version indexes ZIP entries only.
 - Full file manifest in reports is optional and controlled by an export option.
+- External tool outputs are optional and copied into report bundles when present.
 - E01, partition, and filesystem parsing are out of scope for the MVP. Export files with a dedicated forensic tool first, then inspect/import the exported directory.
 
 ## Sample Evidence Policy

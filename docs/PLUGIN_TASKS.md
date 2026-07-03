@@ -162,3 +162,31 @@ MVP done when:
 Cut rule:
 
 - If not stable by Day 5, keep the plugin planned or experimental and remove it from the live demo path.
+
+## `external_forensics`
+
+Status: implemented as optional external tool adapters.
+
+Plugin kind: `EvidencePlugin`.
+
+Purpose:
+
+- Run locally configured ALEAPP, iLEAPP, or Hindsight commands.
+- Keep external outputs in the hzltfw workspace.
+- Emit report-link and highlight artifacts without importing full external
+  result sets.
+
+Artifact types:
+
+- `external.report`
+- `external.highlight`
+
+MVP done when:
+
+- Missing external commands are reported by health check instead of crashing the
+  main workflow.
+- A fake external tool can run in tests and produce an `external.report`
+  artifact.
+- Report bundles copy external output folders and link them from `report.md`.
+- Windows and Linux users can configure command arrays without shell-specific
+  syntax.
