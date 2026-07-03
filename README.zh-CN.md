@@ -50,11 +50,11 @@ uv sync --dev
 
 所有功能开发都必须通过 Pull Request。不要直接 push 到 `main`。
 
-轻量 Git 协作流程、分支命名、PR 检查清单和 AI coding 规则见 [CONTRIBUTING.zh-CN.md](CONTRIBUTING.zh-CN.md)。
+轻量 Git 协作流程、分支命名、PR 检查清单和 AI coding 规则见 [docs/CONTRIBUTING.zh-CN.md](docs/CONTRIBUTING.zh-CN.md)。
 
-插件开发应遵守 [PLUGIN_CONTACT.zh-CN.md](PLUGIN_CONTACT.zh-CN.md) 和 [PLUGIN_TASKS.zh-CN.md](PLUGIN_TASKS.zh-CN.md)。
+插件开发应遵守 [docs/PLUGIN_CONTACT.zh-CN.md](docs/PLUGIN_CONTACT.zh-CN.md) 和 [docs/PLUGIN_TASKS.zh-CN.md](docs/PLUGIN_TASKS.zh-CN.md)。
 如果课程样本来自 Windows 镜像或 E01，请先导出选定文件，并使用
-[EVIDENCE_HANDOFF.zh-CN.md](EVIDENCE_HANDOFF.zh-CN.md) 检查导出目录。
+[docs/EVIDENCE_HANDOFF.zh-CN.md](docs/EVIDENCE_HANDOFF.zh-CN.md) 检查导出目录。
 
 ## 计划工具能力
 
@@ -76,7 +76,9 @@ uv sync --dev
 | 正则搜索 | `keyword_search` |
 | 图片 EXIF 提取 | `metadata_extract` |
 | PDF 元数据提取 | `metadata_extract` |
+| DOCX 元数据提取 | `metadata_extract` |
 | 压缩包索引 | `archive_index` |
+| 已导出 Windows 证据摄取检查 | handoff UI/core |
 | 时间线生成 | artifact/report 聚合 |
 | Chromium 历史记录解析 | `browser_history` 加分项 |
 | 统一 artifact 查看 | UI |

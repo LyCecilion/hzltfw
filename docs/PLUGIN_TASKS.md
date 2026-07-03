@@ -64,8 +64,7 @@ Plugin kind: `EvidencePlugin`.
 
 Purpose:
 
-- Search text-like files for configured keywords.
-- Support simple regex patterns.
+- Search text-like files for built-in demonstration regex patterns.
 - Include a short context snippet around each hit.
 - Skip large binary files by default.
 
@@ -73,21 +72,20 @@ Suggested config:
 
 ```json
 {
-  "keywords": ["泄露", "密码", "课程资料"],
-  "regexes": ["[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}"]
+  "regexes": {
+    "email": "[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}"
+  }
 }
 ```
 
 Artifact types:
 
-- `keyword.hit`
 - `keyword.regex_hit`
 
 MVP done when:
 
-- A `.txt` sample with a keyword produces a hit artifact.
-- A sample email address produces a regex hit artifact.
-- Artifacts include `source_path`, `line_number`, `match`, and `snippet` in `data`.
+- A `.txt` sample with an email, phone number, or student ID produces regex hit artifacts.
+- Artifacts include `source_path` as a common field and `line_number`, `match`, and `snippet` in `data`.
 
 ## `archive_index`
 
@@ -97,7 +95,7 @@ Plugin kind: `EvidencePlugin`.
 
 Purpose:
 
-- Index ZIP files first.
+- Index ZIP files.
 - Add TAR support if time allows.
 - Add 7z support through `py7zr` only after ZIP/TAR are stable.
 - Do not auto-extract archive contents in MVP.
@@ -111,7 +109,7 @@ MVP done when:
 
 - A ZIP sample produces an archive summary artifact.
 - Archive entries include path, uncompressed size, compressed size if available, and modified time if available.
-- Suspicious entry names can be marked with tags such as `keyword` or `suspicious_name`.
+- Suspicious entry names produce key `archive.entry` artifacts with `suspicious_name` tags.
 
 ## `metadata_extract`
 
@@ -123,7 +121,7 @@ Purpose:
 
 - Extract image metadata through Pillow.
 - Extract PDF document metadata through `pypdf`.
-- Extract basic Office metadata if time allows.
+- Extract DOCX core properties through `python-docx`.
 
 Artifact types:
 

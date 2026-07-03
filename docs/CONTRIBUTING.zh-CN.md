@@ -137,7 +137,7 @@ final
 ## 冲突处理规则
 
 - 不要通过删除别人的代码来解决冲突，除非组长确认。
-- 如果冲突发生在 `pyproject.toml`、`core/models.py`、`core/plugin.py` 或 `PLUGIN_CONTACT.md`，合并前必须让组长看。
+- 如果冲突发生在 `pyproject.toml`、`core/models.py`、`core/plugin.py` 或 `docs/PLUGIN_CONTACT.md`，合并前必须让组长看。
 - 如果两个插件需要同一个 helper，把 helper 放到 `src/hzltfw/utils/`，或者先问组长，不要复制粘贴两份。
 
 ## AI Coding 规则
@@ -146,7 +146,7 @@ AI 生成的代码也必须 PR review。
 
 使用 AI coding 工具时：
 
-- 把 `AGENTS.zh-CN.md`、`ARCHITECTURE.md` 和 `PLUGIN_CONTACT.zh-CN.md` 给工具看。
+- 把 `../AGENTS.zh-CN.md`、`ARCHITECTURE.md` 和 `PLUGIN_CONTACT.zh-CN.md` 给工具看。
 - 要求工具只改当前分支任务相关内容。
 - 提交前自己 review 生成的代码。
 - 开 PR 前运行检查。

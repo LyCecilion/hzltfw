@@ -9,22 +9,28 @@ src/hzltfw/
   cli.py
   app.py
   core/
-    config.py
     database.py
+    exceptions.py
+    handoff.py
     models.py
-    workspace.py
-    scanner.py
     plugin.py
-    runner.py
     report.py
+    runner.py
+    scanner.py
+    workspace.py
   plugins/
+    archive_index.py
+    file_type.py
     hash_manifest.py
+    keyword_search.py
+    metadata_extract.py
   ui/
     pages/
-      cases.py
-      evidence.py
       analysis.py
       artifacts.py
+      cases.py
+      evidence.py
+      handoff.py
       reports.py
   utils/
     hashing.py
@@ -41,6 +47,10 @@ src/hzltfw/
 6. Plugins return `ArtifactCreate` objects.
 7. Runner persists artifacts and marks plugin status.
 8. UI and reports read artifacts through common fields and `data_json`.
+
+For Windows image or E01-based exercises, the handoff/intake helper inspects an
+already exported directory and identifies recognizable Windows evidence sources.
+It does not mount or parse disk images directly.
 
 ## Tables
 
@@ -142,6 +152,9 @@ There are two plugin kinds:
 - `FilePlugin`: declares `supports(file)` and analyzes matching files.
 
 Plugins must return `ArtifactCreate` values. They must not write to the database or call the GUI.
+
+Built-in plugins currently cover file hashes, extension mismatch warnings,
+regex-based keyword search, ZIP archive indexing, and image/PDF/DOCX metadata.
 
 ## Runner Behavior
 

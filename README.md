@@ -42,13 +42,14 @@ uv run pytest
 ## Collaboration
 
 All feature work goes through pull requests. Do not push directly to `main`.
-See [CONTRIBUTING.md](CONTRIBUTING.md) for the lightweight Git workflow,
+See [docs/CONTRIBUTING.md](docs/CONTRIBUTING.md) for the lightweight Git workflow,
 branch naming rules, PR checklist, and AI coding rules.
 
-Plugin work should follow [PLUGIN_CONTACT.md](PLUGIN_CONTACT.md) and
-[PLUGIN_TASKS.md](PLUGIN_TASKS.md).
+Plugin work should follow [docs/PLUGIN_CONTACT.md](docs/PLUGIN_CONTACT.md) and
+[docs/PLUGIN_TASKS.md](docs/PLUGIN_TASKS.md).
 For Windows image or E01-based coursework, export selected files first and use
-[EVIDENCE_HANDOFF.md](EVIDENCE_HANDOFF.md) to inspect the exported directory.
+[docs/EVIDENCE_HANDOFF.md](docs/EVIDENCE_HANDOFF.md) to inspect the exported
+directory.
 
 With Determinate Nix or another flakes-enabled Nix:
 
@@ -77,7 +78,9 @@ The course requirement is counted as tool capabilities, not plugin count. The MV
 | Regex search | `keyword_search` |
 | Image EXIF extraction | `metadata_extract` |
 | PDF metadata extraction | `metadata_extract` |
+| DOCX metadata extraction | `metadata_extract` |
 | Archive index | `archive_index` |
+| Exported Windows evidence intake | handoff UI/core |
 | Timeline generation | artifact/report aggregation |
 | Chromium History parsing | `browser_history` bonus |
 | Unified artifact review | UI |
