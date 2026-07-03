@@ -43,23 +43,22 @@ Status: implemented as the first `FilePlugin` example.
 Purpose:
 
 - Detect file type from magic bytes.
-- Record detected extension, MIME type, display name, and confidence.
 - Flag extension mismatch as a key warning artifact.
+- Suppress normal extension matches to avoid noisy artifact lists.
 
 Artifact types:
 
-- `file.type`
 - `file.type_mismatch`
 
 MVP done when:
 
-- Normal files produce `file.type` artifacts.
+- Normal files do not produce artifacts when their extension matches detected type.
 - A fake file such as `fake.jpg` with PDF or ZIP bytes produces `file.type_mismatch`.
 - Mismatch artifacts use `severity="medium"` and `is_key=True`.
 
 ## `keyword_search`
 
-Recommended owner task.
+Status: implemented as an `EvidencePlugin` with built-in demo regex rules.
 
 Plugin kind: `EvidencePlugin`.
 
@@ -92,7 +91,7 @@ MVP done when:
 
 ## `archive_index`
 
-Recommended owner task.
+Status: implemented for ZIP indexing without extraction.
 
 Plugin kind: `EvidencePlugin`.
 
@@ -116,7 +115,7 @@ MVP done when:
 
 ## `metadata_extract`
 
-Recommended owner task.
+Status: implemented for image, PDF, and DOCX metadata.
 
 Plugin kind: `FilePlugin`.
 
