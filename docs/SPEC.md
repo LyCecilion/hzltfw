@@ -27,7 +27,7 @@ A student is suspected of leaking course material. The prepared evidence sample 
 | `keyword_search` | Built-in demo regex hits | Implemented |
 | `archive_index` | ZIP index and suspicious archive entry review | Implemented |
 | `metadata_extract` | Image EXIF, PDF metadata, and DOCX core properties | Implemented |
-| `handoff` | Inspect exported Windows evidence directories | Implemented support feature |
+| `handoff` | Inspect exported Windows evidence directories from Evidence page | Implemented support feature |
 | `timeline` | Time-based artifact/report aggregation | Implemented through report aggregation |
 | `browser_history` | Chromium History parsing | Bonus/planned |
 
@@ -51,7 +51,7 @@ A student is suspected of leaking course material. The prepared evidence sample 
 | PDF metadata | `metadata_extract` |
 | DOCX metadata | `metadata_extract` |
 | Archive listing | `archive_index` |
-| Exported Windows evidence intake | `handoff` core/UI |
+| Exported Windows evidence intake | `handoff` core, evidence UI |
 | Artifact review | artifacts GUI page |
 | Timeline generation | report/UI artifact aggregation |
 | Markdown report export | report generator |

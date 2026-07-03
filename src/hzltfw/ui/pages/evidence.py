@@ -3,6 +3,11 @@ from pathlib import Path
 from nicegui import ui
 from sqlmodel import Session, select
 
+from hzltfw.core.handoff import (
+    intake_table_rows,
+    missing_table_rows,
+    scan_exported_directory,
+)
 from hzltfw.core.models import Case, EvidenceItem
 from hzltfw.core.scanner import scan_evidence
 from hzltfw.ui.pages.common import page_container, render_nav
@@ -34,6 +39,52 @@ def register_evidence_page(engine) -> None:
                 )
                 name = ui.input("Evidence name").classes("w-full")
                 operator = ui.input("Operator").classes("w-full")
+
+                with ui.expansion("Windows export intake", icon="folder_open").classes(
+                    "w-full",
+                ):
+                    found_table = ui.table(
+                        columns=[
+                            {
+                                "name": "category",
+                                "label": "Recognized Source",
+                                "field": "category",
+                            },
+                            {"name": "path", "label": "Path", "field": "path"},
+                            {"name": "kind", "label": "Kind", "field": "kind"},
+                            {"name": "size", "label": "Size", "field": "size"},
+                        ],
+                        rows=[],
+                    ).classes("w-full")
+                    missing_table = ui.table(
+                        columns=[
+                            {
+                                "name": "category",
+                                "label": "Typical Source Not Found",
+                                "field": "category",
+                            },
+                        ],
+                        rows=[],
+                    ).classes("w-full")
+
+                    def inspect_windows_export() -> None:
+                        path = Path(source_path.value or "").expanduser()
+                        if not path.exists() or not path.is_dir():
+                            ui.notify(
+                                "Enter an exported Windows directory path.",
+                                type="warning",
+                            )
+                            return
+                        result = scan_exported_directory(path)
+                        found_table.rows = intake_table_rows(result)
+                        missing_table.rows = missing_table_rows(result)
+                        found_table.update()
+                        missing_table.update()
+                        ui.notify(
+                            f"Found {len(result.findings)} recognizable sources.",
+                        )
+
+                    ui.button("Check Directory", on_click=inspect_windows_export)
 
                 def add_evidence() -> None:
                     path = Path(source_path.value or "").expanduser()

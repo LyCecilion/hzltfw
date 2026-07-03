@@ -80,7 +80,7 @@ The course requirement is counted as tool capabilities, not plugin count. The MV
 | PDF metadata extraction | `metadata_extract` |
 | DOCX metadata extraction | `metadata_extract` |
 | Archive index | `archive_index` |
-| Exported Windows evidence intake | handoff UI/core |
+| Exported Windows evidence intake | evidence UI/core |
 | Timeline generation | artifact/report aggregation |
 | Chromium History parsing | `browser_history` bonus |
 | Unified artifact review | UI |

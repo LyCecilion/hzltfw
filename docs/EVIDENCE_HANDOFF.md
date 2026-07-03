@@ -10,8 +10,8 @@ Recommended workflow:
 1. Use a forensic tool such as FTK Imager, Autopsy, X-Ways, Arsenal Image
    Mounter, ewf-tools, or The Sleuth Kit to inspect the source image.
 2. Export selected Windows files and directories into a normal directory.
-3. Use the **Evidence Handoff** page to inspect the exported directory and
-   confirm which recognizable sources are present.
+3. Use the **Windows export intake** section on the **Evidence** page to inspect
+   the exported directory and confirm which recognizable sources are present.
 4. Import that exported directory into `hzltfw`.
 5. Run the default plugins and export a Markdown report.
 
@@ -31,9 +31,9 @@ Recommended workflow:
 
 - Preserve filenames and directory structure when practical.
 - Do not commit full evidence samples to this repository.
-- Keep sample hashes, expected findings, and handoff notes in documentation.
+- Keep sample hashes, expected findings, and intake notes in documentation.
 - Use fake personal data for course demonstrations.
 
-The local GUI also has an **Evidence Handoff** page that scans an exported
-directory, lists recognizable Windows sources, shows missing source categories,
-and exports the intake result as Markdown.
+The local GUI also has a **Windows export intake** section on the **Evidence**
+page. It scans an exported directory, lists recognizable Windows sources, and
+shows missing source categories before the same directory is added as evidence.

@@ -30,7 +30,6 @@ src/hzltfw/
       artifacts.py
       cases.py
       evidence.py
-      handoff.py
       reports.py
   utils/
     hashing.py
@@ -48,9 +47,10 @@ src/hzltfw/
 7. Runner persists artifacts and marks plugin status.
 8. UI and reports read artifacts through common fields and `data_json`.
 
-For Windows image or E01-based exercises, the handoff/intake helper inspects an
-already exported directory and identifies recognizable Windows evidence sources.
-It does not mount or parse disk images directly.
+For Windows image or E01-based exercises, the Evidence page can call the
+handoff/intake helper to inspect an already exported directory and identify
+recognizable Windows evidence sources. It does not mount or parse disk images
+directly.
 
 ## Tables
 

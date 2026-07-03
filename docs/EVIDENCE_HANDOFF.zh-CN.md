@@ -10,7 +10,8 @@
 1. 使用 FTK Imager、Autopsy、X-Ways、Arsenal Image Mounter、ewf-tools 或
    The Sleuth Kit 等取证工具查看源镜像。
 2. 将需要分析的 Windows 文件和目录导出成普通目录。
-3. 在 **Evidence Handoff** 页面检查这个导出目录，确认其中有哪些可识别来源。
+3. 在 **Evidence** 页面的 **Windows export intake** 区域检查这个导出目录，
+   确认其中有哪些可识别来源。
 4. 将这个导出目录导入 `hzltfw`。
 5. 运行默认插件并导出 Markdown 报告。
 
@@ -30,8 +31,8 @@
 
 - 尽量保留原始文件名和目录结构。
 - 不要将完整证据样本提交到本仓库。
-- 在文档中记录样本哈希、预期发现和交接说明。
+- 在文档中记录样本哈希、预期发现和摄取说明。
 - 课程演示样本应使用虚构个人数据。
 
-本地 GUI 也提供 **Evidence Handoff** 页面，可扫描导出目录、列出可识别的
-Windows 来源、显示缺失类别，并将摄取结果导出为 Markdown。
+本地 GUI 的 **Evidence** 页面提供 **Windows export intake** 区域，可扫描
+导出目录、列出可识别的 Windows 来源，并在正式添加检材前显示缺失类别。

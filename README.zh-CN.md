@@ -78,7 +78,7 @@ uv sync --dev
 | PDF 元数据提取 | `metadata_extract` |
 | DOCX 元数据提取 | `metadata_extract` |
 | 压缩包索引 | `archive_index` |
-| 已导出 Windows 证据摄取检查 | handoff UI/core |
+| 已导出 Windows 证据摄取检查 | evidence UI/core |
 | 时间线生成 | artifact/report 聚合 |
 | Chromium 历史记录解析 | `browser_history` 加分项 |
 | 统一 artifact 查看 | UI |

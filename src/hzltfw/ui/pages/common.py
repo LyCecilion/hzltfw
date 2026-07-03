@@ -7,7 +7,6 @@ def render_nav() -> None:
         with ui.row().classes("gap-2"):
             ui.link("Cases", "/cases")
             ui.link("Evidence", "/evidence")
-            ui.link("Handoff", "/handoff")
             ui.link("Analysis", "/analysis")
             ui.link("Artifacts", "/artifacts")
             ui.link("Reports", "/reports")
