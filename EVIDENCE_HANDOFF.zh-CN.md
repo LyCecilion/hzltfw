@@ -1,4 +1,4 @@
-# Windows 证据交接指南
+# Windows 证据摄取指南
 
 [English](EVIDENCE_HANDOFF.md)
 
@@ -10,8 +10,9 @@
 1. 使用 FTK Imager、Autopsy、X-Ways、Arsenal Image Mounter、ewf-tools 或
    The Sleuth Kit 等取证工具查看源镜像。
 2. 将需要分析的 Windows 文件和目录导出成普通目录。
-3. 将这个导出目录导入 `hzltfw`。
-4. 运行默认插件并导出 Markdown 报告。
+3. 在 **Evidence Handoff** 页面检查这个导出目录，确认其中有哪些可识别来源。
+4. 将这个导出目录导入 `hzltfw`。
+5. 运行默认插件并导出 Markdown 报告。
 
 ## 建议导出目标
 
@@ -32,5 +33,5 @@
 - 在文档中记录样本哈希、预期发现和交接说明。
 - 课程演示样本应使用虚构个人数据。
 
-本地 GUI 也提供 **Evidence Handoff** 页面，可针对具体案件或样本导出
-Markdown 交接清单。
+本地 GUI 也提供 **Evidence Handoff** 页面，可扫描导出目录、列出可识别的
+Windows 来源、显示缺失类别，并将摄取结果导出为 Markdown。

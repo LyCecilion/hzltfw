@@ -1,4 +1,4 @@
-# Windows Evidence Handoff Guide
+# Windows Evidence Intake Guide
 
 [中文](EVIDENCE_HANDOFF.zh-CN.md)
 
@@ -10,8 +10,10 @@ Recommended workflow:
 1. Use a forensic tool such as FTK Imager, Autopsy, X-Ways, Arsenal Image
    Mounter, ewf-tools, or The Sleuth Kit to inspect the source image.
 2. Export selected Windows files and directories into a normal directory.
-3. Import that exported directory into `hzltfw`.
-4. Run the default plugins and export a Markdown report.
+3. Use the **Evidence Handoff** page to inspect the exported directory and
+   confirm which recognizable sources are present.
+4. Import that exported directory into `hzltfw`.
+5. Run the default plugins and export a Markdown report.
 
 ## Export Targets
 
@@ -32,5 +34,6 @@ Recommended workflow:
 - Keep sample hashes, expected findings, and handoff notes in documentation.
 - Use fake personal data for course demonstrations.
 
-The local GUI also has an **Evidence Handoff** page that can export this
-checklist as a Markdown file for a specific case or sample.
+The local GUI also has an **Evidence Handoff** page that scans an exported
+directory, lists recognizable Windows sources, shows missing source categories,
+and exports the intake result as Markdown.
