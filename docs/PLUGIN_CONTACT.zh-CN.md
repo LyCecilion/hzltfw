@@ -36,6 +36,15 @@
 - `metadata_extract`
 - `browser_history`
 
+### 外部工具适配器
+
+`external_forensics` 这类适配器以 `EvidencePlugin` 实现。它们可以调用本机
+已配置的命令，但仍然只能返回 `ArtifactCreate`，不得直接写数据库，也不得调用
+GUI。
+
+外部工具在 `.hzltfw/config.json` 中配置。不要把外部工具源码树或二进制文件
+vendor 到本仓库。
+
 ## ArtifactCreate 字段
 
 ```text
@@ -68,6 +77,7 @@ data: dict
 - 最小样本或样本说明。
 - 预期 artifact 示例。
 - Windows 测试说明。
+- 外部工具适配器还必须说明安装/配置方式，以及预期输出文件或报告入口路径。
 
 ## Artifact 示例
 

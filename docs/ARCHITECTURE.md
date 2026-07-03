@@ -20,6 +20,7 @@ src/hzltfw/
     workspace.py
   plugins/
     archive_index.py
+    external_forensics.py
     file_type.py
     hash_manifest.py
     keyword_search.py
@@ -154,7 +155,13 @@ There are two plugin kinds:
 Plugins must return `ArtifactCreate` values. They must not write to the database or call the GUI.
 
 Built-in plugins currently cover file hashes, extension mismatch warnings,
-regex-based keyword search, ZIP archive indexing, and image/PDF/DOCX metadata.
+regex-based keyword search, ZIP archive indexing, image/PDF/DOCX metadata, and
+optional external ALEAPP/iLEAPP/Hindsight adapters.
+
+External adapters still follow the plugin contract: they do not persist directly
+or call the GUI. They run configured local commands, store outputs in the case
+workspace, and return normalized `external.report` / `external.highlight`
+artifacts.
 
 ## Runner Behavior
 
@@ -176,3 +183,5 @@ Markdown reports use this fixed structure:
 7. Appendix
 
 The full file manifest is optional because it can be large.
+Report bundles add a portable directory layout with `report.md` and copied
+external tool outputs under `external/<tool>/<run-id>/`.
