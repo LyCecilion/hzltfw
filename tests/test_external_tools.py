@@ -206,7 +206,7 @@ def test_report_bundle_copies_external_outputs(tmp_path: Path) -> None:
         )
 
     report = report_path.read_text(encoding="utf-8")
-    assert "External Tool Reports" in report
+    assert "外部工具报告" in report
     assert "external/aleapp/run-" in report
     assert next((tmp_path / "bundle" / "external").rglob("index.html")).exists()
 

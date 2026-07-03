@@ -11,6 +11,7 @@ from hzltfw.core.handoff import (
 from hzltfw.core.models import Case, EvidenceItem
 from hzltfw.core.scanner import scan_evidence
 from hzltfw.ui.pages.common import page_container, render_nav
+from hzltfw.utils.i18n import t
 
 
 def register_evidence_page(engine) -> None:
@@ -18,7 +19,7 @@ def register_evidence_page(engine) -> None:
     def evidence_page() -> None:
         render_nav()
         with page_container():
-            ui.label("Evidence").classes("text-2xl font-semibold")
+            ui.label(t("evidence.title")).classes("text-2xl font-semibold")
 
             with Session(engine) as session:
                 cases = list(
@@ -28,19 +29,19 @@ def register_evidence_page(engine) -> None:
 
             case_options = {case.id: f"{case.case_no} - {case.name}" for case in cases}
             with ui.card().classes("w-full"):
-                ui.label("Add Evidence").classes("text-lg font-medium")
+                ui.label(t("evidence.add")).classes("text-lg font-medium")
                 case_select = ui.select(
                     options=case_options,
-                    label="Case",
+                    label=t("evidence.case"),
                     value=next(iter(case_options), None),
                 ).classes("w-full")
-                source_path = ui.input("Evidence file or directory path").classes(
+                source_path = ui.input(t("evidence.path")).classes(
                     "w-full",
                 )
-                name = ui.input("Evidence name").classes("w-full")
-                operator = ui.input("Operator").classes("w-full")
+                name = ui.input(t("evidence.name")).classes("w-full")
+                operator = ui.input(t("evidence.operator")).classes("w-full")
 
-                with ui.expansion("Windows export intake", icon="folder_open").classes(
+                with ui.expansion(t("evidence.intake"), icon="folder_open").classes(
                     "w-full",
                 ):
                     found_table = ui.table(
@@ -84,15 +85,15 @@ def register_evidence_page(engine) -> None:
                             f"Found {len(result.findings)} recognizable sources.",
                         )
 
-                    ui.button("Check Directory", on_click=inspect_windows_export)
+                    ui.button(t("evidence.check"), on_click=inspect_windows_export)
 
                 def add_evidence() -> None:
                     path = Path(source_path.value or "").expanduser()
                     if not case_select.value:
-                        ui.notify("Create a case first.", type="warning")
+                        ui.notify(t("notify.create_case_first"), type="warning")
                         return
                     if not path.exists():
-                        ui.notify("Evidence path does not exist.", type="negative")
+                        ui.notify(t("notify.evidence_missing"), type="negative")
                         return
                     evidence_type = "directory" if path.is_dir() else "file"
                     with Session(engine) as session:
@@ -107,10 +108,10 @@ def register_evidence_page(engine) -> None:
                         session.commit()
                         session.refresh(evidence)
                         scan_evidence(session, evidence)
-                    ui.notify("Evidence added and scanned.")
+                    ui.notify(t("notify.evidence_added"))
                     ui.navigate.reload()
 
-                ui.button("Add and Scan", on_click=add_evidence)
+                ui.button(t("evidence.add_scan"), on_click=add_evidence)
 
             ui.table(
                 columns=[

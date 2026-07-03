@@ -8,6 +8,7 @@ from hzltfw.ui.pages.artifacts import register_artifacts_page
 from hzltfw.ui.pages.cases import register_cases_page
 from hzltfw.ui.pages.evidence import register_evidence_page
 from hzltfw.ui.pages.reports import register_reports_page
+from hzltfw.utils.i18n import t
 
 
 def run_app(
@@ -26,7 +27,7 @@ def run_app(
     register_reports_page(engine)
 
     ui.run(
-        title="Hazelita Forensics Workbench",
+        title=t("app.title"),
         host=host,
         port=port,
         reload=False,
