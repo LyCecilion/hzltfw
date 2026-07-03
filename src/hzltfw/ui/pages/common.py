@@ -1,15 +1,17 @@
 from nicegui import ui
 
+from hzltfw.utils.i18n import t
+
 
 def render_nav() -> None:
     with ui.header().classes("items-center justify-between"):
-        ui.label("Hazelita Forensics Workbench").classes("text-lg font-semibold")
+        ui.label(t("app.title")).classes("text-lg font-semibold")
         with ui.row().classes("gap-2"):
-            ui.link("Cases", "/cases")
-            ui.link("Evidence", "/evidence")
-            ui.link("Analysis", "/analysis")
-            ui.link("Artifacts", "/artifacts")
-            ui.link("Reports", "/reports")
+            ui.link(t("nav.cases"), "/cases")
+            ui.link(t("nav.evidence"), "/evidence")
+            ui.link(t("nav.analysis"), "/analysis")
+            ui.link(t("nav.discoveries"), "/artifacts")
+            ui.link(t("nav.reports"), "/reports")
 
 
 def page_container():

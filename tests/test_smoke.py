@@ -74,7 +74,7 @@ def test_vertical_slice(tmp_path: Path) -> None:
         )
 
     report = report_path.read_text(encoding="utf-8")
-    assert "Electronic Data Forensics Analysis Report" in report
+    assert "电子数据取证分析报告" in report
     assert "hash_manifest" in report
     assert "file_type" in report
     assert "keyword_search" in report
