@@ -26,6 +26,7 @@ class PluginContext:
     case_id: int
     evidence_id: int
     workspace_path: Path
+    plugin_run_id: int = 0
     config: dict[str, Any] = field(default_factory=dict)
 
 

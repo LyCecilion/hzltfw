@@ -10,13 +10,22 @@ from hzltfw.core.plugin import (
     PluginContext,
 )
 from hzltfw.core.workspace import case_workspace_path
+from hzltfw.plugins.archive_index import ArchiveIndexPlugin
 from hzltfw.plugins.file_type import FileTypePlugin
 from hzltfw.plugins.hash_manifest import HashManifestPlugin
+from hzltfw.plugins.keyword_search import KeywordSearchPlugin
+from hzltfw.plugins.metadata_extract import MetadataExtractPlugin
 from hzltfw.utils.timestamps import utc_now
 
 
 def default_plugins() -> list[BasePlugin]:
-    return [HashManifestPlugin(), FileTypePlugin()]
+    return [
+        HashManifestPlugin(),
+        FileTypePlugin(),
+        KeywordSearchPlugin(),
+        ArchiveIndexPlugin(),
+        MetadataExtractPlugin(),
+    ]
 
 
 def run_plugins_for_evidence(
@@ -52,6 +61,7 @@ def run_plugins_for_evidence(
             case_id=evidence.case_id,
             evidence_id=evidence.id or 0,
             workspace_path=case_workspace_path(evidence.case_id),
+            plugin_run_id=run.id or 0,
         )
 
         try:

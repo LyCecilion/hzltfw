@@ -67,7 +67,7 @@
 - 预期 artifact 示例。
 - Windows 测试说明。
 
-插件契约以 `PLUGIN_CONTACT.zh-CN.md` 为准。
+插件契约以 `docs/PLUGIN_CONTACT.zh-CN.md` 为准。
 
 ## 代码风格
 
@@ -94,7 +94,7 @@
 
 ## Git 工作流
 
-- 遵守 `CONTRIBUTING.zh-CN.md`。
+- 遵守 `docs/CONTRIBUTING.zh-CN.md`。
 - 不要直接 commit 到 `main`。
 - 所有改动必须通过 Pull Request。
 - 分支要短生命周期，并聚焦一个任务。
