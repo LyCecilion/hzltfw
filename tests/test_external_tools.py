@@ -3,6 +3,8 @@ import tarfile
 from pathlib import Path
 from zipfile import ZipFile
 
+from sqlmodel import Session, select
+
 from hzltfw.core.config import (
     AppConfig,
     ExternalToolConfig,
@@ -10,8 +12,13 @@ from hzltfw.core.config import (
     load_config,
     save_config,
 )
+from hzltfw.core.database import create_db_engine, init_db
 from hzltfw.core.external_probe import probe_external_input
 from hzltfw.core.external_tools import check_tool_health, run_external_tool
+from hzltfw.core.models import Artifact, Case, EvidenceItem
+from hzltfw.core.runner import run_plugins_for_evidence
+from hzltfw.core.scanner import scan_evidence
+from hzltfw.plugins.external_forensics import ExternalForensicsPlugin
 
 
 def test_config_roundtrip(tmp_path: Path) -> None:
@@ -103,6 +110,55 @@ def test_probe_chromium_tar(tmp_path: Path) -> None:
 
     assert result.input_type == "tar"
     assert result.suggestions[0].tool_name == "hindsight"
+
+
+def test_external_forensics_plugin_creates_report_artifact(tmp_path: Path) -> None:
+    evidence_dir = tmp_path / "android"
+    (evidence_dir / "data" / "data" / "com.android.chrome").mkdir(parents=True)
+    (evidence_dir / "data" / "data" / "com.android.chrome" / "prefs.xml").write_text(
+        "demo",
+        encoding="utf-8",
+    )
+    tool = ExternalToolConfig(
+        name="aleapp",
+        command=[sys.executable, str(_write_fake_tool(tmp_path))],
+    )
+    engine = create_db_engine(f"sqlite:///{tmp_path / 'test.db'}")
+    init_db(engine)
+
+    with Session(engine) as session:
+        case = Case(case_no="CASE-EXT", name="External Test")
+        session.add(case)
+        session.commit()
+        session.refresh(case)
+        evidence = EvidenceItem(
+            case_id=case.id or 0,
+            name="android",
+            source_path=str(evidence_dir),
+            evidence_type="directory",
+        )
+        session.add(evidence)
+        session.commit()
+        session.refresh(evidence)
+        scan_evidence(session, evidence)
+
+        runs = run_plugins_for_evidence(
+            session,
+            evidence.id or 0,
+            plugins=[
+                ExternalForensicsPlugin(
+                    "aleapp",
+                    input_type="fs",
+                    tool_config=tool,
+                ),
+            ],
+        )
+        artifacts = list(session.exec(select(Artifact)))
+
+    assert runs[0].status == "success"
+    assert artifacts[0].artifact_type == "external.report"
+    assert artifacts[0].data_json["tool_name"] == "aleapp"
+    assert Path(artifacts[0].data_json["report_path"]).name == "index.html"
 
 
 def _write_fake_tool(tmp_path: Path) -> Path:
