@@ -7,6 +7,7 @@ from hzltfw.ui.pages.analysis import register_analysis_page
 from hzltfw.ui.pages.artifacts import register_artifacts_page
 from hzltfw.ui.pages.cases import register_cases_page
 from hzltfw.ui.pages.evidence import register_evidence_page
+from hzltfw.ui.pages.handoff import register_handoff_page
 from hzltfw.ui.pages.reports import register_reports_page
 
 
@@ -21,6 +22,7 @@ def run_app(
 
     register_cases_page(engine)
     register_evidence_page(engine)
+    register_handoff_page()
     register_analysis_page(engine)
     register_artifacts_page(engine)
     register_reports_page(engine)
