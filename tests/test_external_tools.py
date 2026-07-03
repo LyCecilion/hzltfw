@@ -222,7 +222,9 @@ def _write_fake_tool(tmp_path: Path) -> Path:
         "for flag in ('-o', '--output_path'):\n"
         "    if flag in sys.argv:\n"
         "        output = pathlib.Path(sys.argv[sys.argv.index(flag) + 1])\n"
-        "output.mkdir(parents=True, exist_ok=True)\n"
+        "if not output.exists():\n"
+        "    print('OUTPUT folder does not exist!', file=sys.stderr)\n"
+        "    raise SystemExit(2)\n"
         "(output / 'index.html').write_text('<html>ok</html>')\n"
         "print('fake output')\n",
         encoding="utf-8",
