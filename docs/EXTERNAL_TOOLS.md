@@ -51,10 +51,15 @@ Use a JSON string array for each command. Do not use shell-specific syntax,
 pipes, aliases, or environment variable expansion. This keeps the adapter
 portable across Windows and Linux.
 
+For source-checkout tools, prefer the Python executable inside that tool's own
+virtual environment. This avoids mixing ALEAPP/iLEAPP/Hindsight dependencies
+with hzltfw's dependencies.
+
 Windows examples:
 
 ```json
 ["py", "-3", "C:\\Tools\\ALEAPP\\aleapp.py"]
+["C:\\Tools\\ALEAPP\\.venv\\Scripts\\python.exe", "C:\\Tools\\ALEAPP\\aleapp.py"]
 ["C:\\Tools\\ileapp.exe"]
 ```
 
@@ -62,6 +67,7 @@ Linux examples:
 
 ```json
 ["python3", "/opt/ALEAPP/aleapp.py"]
+["/opt/ALEAPP/.venv/bin/python", "/opt/ALEAPP/aleapp.py"]
 ["/opt/ileapp"]
 ```
 

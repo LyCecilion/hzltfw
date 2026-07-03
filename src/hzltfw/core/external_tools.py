@@ -57,6 +57,7 @@ def check_tool_health(
     try:
         completed = subprocess.run(
             [*tool.command, "--help"],
+            cwd=_command_working_dir(tool.command),
             capture_output=True,
             text=True,
             timeout=timeout_seconds,
@@ -94,7 +95,7 @@ def run_external_tool(
     command = [*command_prefix, *arguments]
     completed = subprocess.run(
         command,
-        cwd=target_dir,
+        cwd=_command_working_dir(command_prefix),
         capture_output=True,
         text=True,
         timeout=timeout_seconds,
@@ -115,6 +116,14 @@ def _resolve_executable(executable: str) -> str | None:
     if path.is_absolute() or len(path.parts) > 1:
         return str(path) if path.exists() else None
     return shutil.which(executable)
+
+
+def _command_working_dir(command_prefix: list[str]) -> Path | None:
+    for value in reversed(command_prefix):
+        path = Path(value)
+        if path.exists() and path.is_file():
+            return path.parent
+    return None
 
 
 def _first_line(value: str) -> str:

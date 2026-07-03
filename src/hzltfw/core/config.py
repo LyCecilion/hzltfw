@@ -51,15 +51,33 @@ def default_config() -> AppConfig:
 
 def default_external_tools() -> dict[str, ExternalToolConfig]:
     candidates = {
-        "aleapp": PORTABLE_APPS_ROOT / "ALEAPP" / "aleapp.py",
-        "ileapp": PORTABLE_APPS_ROOT / "ILEAPP" / "ileapp.py",
-        "hindsight": PORTABLE_APPS_ROOT / "hindsight" / "hindsight.py",
+        "aleapp": PORTABLE_APPS_ROOT / "ALEAPP",
+        "ileapp": PORTABLE_APPS_ROOT / "ILEAPP",
+        "hindsight": PORTABLE_APPS_ROOT / "hindsight",
     }
     tools: dict[str, ExternalToolConfig] = {}
-    for name, path in candidates.items():
-        command = ["python", str(path)] if path.exists() else []
+    for name, tool_dir in candidates.items():
+        script = tool_dir / f"{name}.py"
+        command = _python_script_command(tool_dir, script) if script.exists() else []
         tools[name] = ExternalToolConfig(name=name, command=command)
     return tools
+
+
+def _python_script_command(tool_dir: Path, script: Path) -> list[str]:
+    venv_python = _venv_python(tool_dir)
+    if venv_python is not None:
+        return [str(venv_python), str(script)]
+    return ["python", str(script)]
+
+
+def _venv_python(tool_dir: Path) -> Path | None:
+    candidates = (
+        tool_dir / ".venv" / "bin" / "python",
+        tool_dir / "venv" / "bin" / "python",
+        tool_dir / ".venv" / "Scripts" / "python.exe",
+        tool_dir / "venv" / "Scripts" / "python.exe",
+    )
+    return next((path for path in candidates if path.exists()), None)
 
 
 def _config_from_data(data: dict[str, Any]) -> AppConfig:
