@@ -61,6 +61,7 @@ def run_plugins_for_evidence(
             case_id=evidence.case_id,
             evidence_id=evidence.id or 0,
             workspace_path=case_workspace_path(evidence.case_id),
+            plugin_run_id=run.id or 0,
         )
 
         try:
