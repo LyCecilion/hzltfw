@@ -1,5 +1,6 @@
 from collections import defaultdict
 from pathlib import Path
+from shutil import copytree
 
 from sqlmodel import Session, select
 
@@ -31,7 +32,10 @@ def export_case_markdown(
         evidence_items=evidence_items,
         runs=runs,
         artifacts=artifacts,
-        manifest=_render_manifest(session, evidence_items) if include_manifest else [],
+        appendix=_render_appendix(
+            _render_manifest(session, evidence_items) if include_manifest else [],
+            [],
+        ),
     )
     output.write_text(
         report,
@@ -40,12 +44,47 @@ def export_case_markdown(
     return output
 
 
+def export_case_report_bundle(
+    session: Session,
+    case_id: int,
+    output_dir: str | Path,
+    *,
+    include_manifest: bool = False,
+) -> Path:
+    case = session.get(Case, case_id)
+    if case is None:
+        raise CaseNotFoundError
+
+    evidence_items = list(
+        session.exec(select(EvidenceItem).where(EvidenceItem.case_id == case_id)),
+    )
+    runs = list(session.exec(select(PluginRun).where(PluginRun.case_id == case_id)))
+    artifacts = list(session.exec(select(Artifact).where(Artifact.case_id == case_id)))
+
+    bundle_root = Path(output_dir)
+    bundle_root.mkdir(parents=True, exist_ok=True)
+    external_links = _copy_external_reports(bundle_root, artifacts)
+    report = _render_report(
+        case=case,
+        evidence_items=evidence_items,
+        runs=runs,
+        artifacts=artifacts,
+        appendix=_render_appendix(
+            _render_manifest(session, evidence_items) if include_manifest else [],
+            external_links,
+        ),
+    )
+    report_path = bundle_root / "report.md"
+    report_path.write_text(report, encoding="utf-8")
+    return report_path
+
+
 def _render_report(
     case: Case,
     evidence_items: list[EvidenceItem],
     runs: list[PluginRun],
     artifacts: list[Artifact],
-    manifest: list[str],
+    appendix: list[str],
 ) -> str:
     lines = [
         "# Electronic Data Forensics Analysis Report",
@@ -57,7 +96,7 @@ def _render_report(
     lines.extend(_render_key_findings(artifacts))
     lines.extend(_render_timeline(artifacts))
     lines.extend(_render_detailed_results(artifacts))
-    lines.extend(_render_appendix(manifest))
+    lines.extend(appendix)
     return "\n".join(lines).rstrip() + "\n"
 
 
@@ -152,8 +191,12 @@ def _render_detailed_results(artifacts: list[Artifact]) -> list[str]:
     return lines
 
 
-def _render_appendix(manifest: list[str]) -> list[str]:
+def _render_appendix(manifest: list[str], external_links: list[str]) -> list[str]:
     lines = ["## 7. Appendix", ""]
+    if external_links:
+        lines.extend(["### External Tool Reports", ""])
+        lines.extend(external_links)
+        lines.append("")
     if manifest:
         lines.extend(manifest)
     else:
@@ -191,3 +234,47 @@ def _render_manifest(session: Session, evidence_items: list[EvidenceItem]) -> li
             )
         lines.append("")
     return lines
+
+
+def _copy_external_reports(bundle_root: Path, artifacts: list[Artifact]) -> list[str]:
+    links: list[str] = []
+    for artifact in artifacts:
+        if artifact.artifact_type != "external.report":
+            continue
+        output_dir = artifact.data_json.get("output_dir")
+        if not isinstance(output_dir, str):
+            continue
+        source_dir = Path(output_dir)
+        if not source_dir.exists() or not source_dir.is_dir():
+            continue
+        tool_name = str(artifact.data_json.get("tool_name") or "external")
+        destination = (
+            bundle_root
+            / "external"
+            / tool_name
+            / f"run-{artifact.plugin_run_id}"
+        )
+        copytree(source_dir, destination, dirs_exist_ok=True)
+        links.append(_external_report_link(artifact, bundle_root, destination))
+    return links
+
+
+def _external_report_link(
+    artifact: Artifact,
+    bundle_root: Path,
+    destination: Path,
+) -> str:
+    report_path = artifact.data_json.get("report_path")
+    link_target = destination
+    if isinstance(report_path, str):
+        source_report = Path(report_path)
+        try:
+            relative_report = source_report.relative_to(
+                Path(artifact.data_json["output_dir"]),
+            )
+        except (KeyError, ValueError):
+            relative_report = Path(source_report.name)
+        link_target = destination / relative_report
+    relative_link = link_target.relative_to(bundle_root).as_posix()
+    title = artifact.title.replace("[", "\\[").replace("]", "\\]")
+    return f"- [{title}]({relative_link})"

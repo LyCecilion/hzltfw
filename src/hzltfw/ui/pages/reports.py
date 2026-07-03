@@ -4,7 +4,7 @@ from nicegui import ui
 from sqlmodel import Session, select
 
 from hzltfw.core.models import Case
-from hzltfw.core.report import export_case_markdown
+from hzltfw.core.report import export_case_markdown, export_case_report_bundle
 from hzltfw.ui.pages.common import page_container, render_nav
 
 
@@ -35,6 +35,10 @@ def register_reports_page(engine) -> None:
                     "Output path",
                     value=str(Path("reports") / "case-report.md"),
                 ).classes("w-full")
+                bundle_path = ui.input(
+                    "Bundle directory",
+                    value=str(Path("reports") / "case-report-bundle"),
+                ).classes("w-full")
 
                 def export_report() -> None:
                     if not case_select.value:
@@ -50,3 +54,18 @@ def register_reports_page(engine) -> None:
                     ui.notify(f"Report exported: {path}")
 
                 ui.button("Export Markdown", on_click=export_report)
+
+                def export_bundle() -> None:
+                    if not case_select.value:
+                        ui.notify("Create a case first.", type="warning")
+                        return
+                    with Session(engine) as session:
+                        path = export_case_report_bundle(
+                            session,
+                            case_select.value,
+                            bundle_path.value,
+                            include_manifest=include_manifest.value,
+                        )
+                    ui.notify(f"Report bundle exported: {path}")
+
+                ui.button("Export Bundle", on_click=export_bundle)
