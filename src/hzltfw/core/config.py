@@ -109,7 +109,9 @@ def _tool_from_data(
     enabled = data.get("enabled", True)
     return ExternalToolConfig(
         name=name,
-        command=command if _is_command(command) else default_tool.command
+        command=command
+        if _is_command(command)
+        else default_tool.command
         if default_tool
         else [],
         enabled=enabled if isinstance(enabled, bool) else True,

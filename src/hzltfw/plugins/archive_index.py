@@ -23,7 +23,7 @@ SUSPICIOUS_NAME_KEYWORDS = (
 
 class ArchiveIndexPlugin:
     name = "archive_index"
-    version = "0.1.0"
+    version = "1.0.0"
     description = "Index ZIP archive entries without extracting them."
     plugin_type = "evidence"
     artifact_types = ["archive.index", "archive.entry"]
@@ -131,8 +131,7 @@ def _archive_entry_artifact(
         artifact_type="archive.entry",
         title=f"Suspicious archive entry: {entry['path']}",
         summary=(
-            f"{entry['path']} in {file.relative_path} "
-            f"matched {', '.join(reasons)}."
+            f"{entry['path']} in {file.relative_path} matched {', '.join(reasons)}."
         ),
         source_path=f"{file.relative_path}!/{entry['path']}",
         timestamp=file.mtime,
@@ -154,7 +153,5 @@ def _suspicious_reasons(path: str, rules) -> list[str]:  # noqa: ANN001
         for keyword in SUSPICIOUS_NAME_KEYWORDS
         if keyword.lower() in lowered
     ]
-    reasons.extend(
-        f"regex:{rule.name}" for rule in rules if rule.pattern.search(path)
-    )
+    reasons.extend(f"regex:{rule.name}" for rule in rules if rule.pattern.search(path))
     return reasons

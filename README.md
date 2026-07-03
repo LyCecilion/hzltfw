@@ -39,6 +39,23 @@ uv run ruff check .
 uv run pytest
 ```
 
+With Determinate Nix or another flakes-enabled Nix:
+
+```bash
+nix develop
+uv sync --dev
+```
+
+## Release
+
+Current release: `v1.0.0`.
+
+This is the first formal coursework release. It keeps the local NiceGUI
+workflow, built-in artifact plugins, optional ALEAPP/iLEAPP/Hindsight adapters,
+Chinese/English UI text, and portable report-bundle export in one packageable
+desktop-friendly app. See [docs/RELEASE_NOTES.md](docs/RELEASE_NOTES.md) for
+the release scope, demo path, and known boundaries.
+
 ## Collaboration
 
 All feature work goes through pull requests. Do not push directly to `main`.
@@ -52,13 +69,6 @@ For Windows image or E01-based coursework, export selected files first and use
 directory.
 For ALEAPP, iLEAPP, Hindsight, and report-bundle workflows, see
 [docs/EXTERNAL_TOOLS.md](docs/EXTERNAL_TOOLS.md).
-
-With Determinate Nix or another flakes-enabled Nix:
-
-```bash
-nix develop
-uv sync --dev
-```
 
 ## Planned Tool Capabilities
 

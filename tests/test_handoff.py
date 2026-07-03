@@ -73,12 +73,17 @@ def _write_exported_windows_tree(tmp_path: Path) -> Path:
     (user / "Documents" / "leak.docx").write_text("sample", encoding="utf-8")
     (user / "Downloads" / "course.zip").write_text("sample", encoding="utf-8")
     (
-        user / "AppData" / "Local" / "Google" / "Chrome" / "User Data" / "Default"
+        user
+        / "AppData"
+        / "Local"
+        / "Google"
+        / "Chrome"
+        / "User Data"
+        / "Default"
         / "History"
     ).write_text("sqlite", encoding="utf-8")
     (
-        user / "AppData" / "Roaming" / "Microsoft" / "Windows" / "Recent"
-        / "leak.lnk"
+        user / "AppData" / "Roaming" / "Microsoft" / "Windows" / "Recent" / "leak.lnk"
     ).write_text("shortcut", encoding="utf-8")
     (user / "NTUSER.DAT").write_text("registry", encoding="utf-8")
     (root / "Windows" / "System32" / "config" / "SOFTWARE").write_text(

@@ -46,6 +46,15 @@ nix develop
 uv sync --dev
 ```
 
+## 发布
+
+当前正式版本：`v1.0.0`。
+
+这是第一个大作业正式交付版本。该版本保留本地 NiceGUI 工作流，包含内置
+artifact 插件、可选 ALEAPP/iLEAPP/Hindsight 外部工具适配、中英双语主界面，
+并支持可携带报告包导出。发布范围、演示路径和已知边界见
+[docs/RELEASE_NOTES.zh-CN.md](docs/RELEASE_NOTES.zh-CN.md)。
+
 ## 协作
 
 所有功能开发都必须通过 Pull Request。不要直接 push 到 `main`。

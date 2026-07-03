@@ -40,7 +40,7 @@ class RegexRule:
 
 class KeywordSearchPlugin:
     name = "keyword_search"
-    version = "0.1.0"
+    version = "1.0.0"
     description = "Search text-like evidence files for demonstration regex hits."
     plugin_type = "evidence"
     artifact_types = ["keyword.regex_hit"]
@@ -91,8 +91,7 @@ def regex_rules(config: dict[str, Any] | None = None) -> list[RegexRule]:
         items = configured.items()
     else:
         items = (
-            (f"regex_{index + 1}", pattern)
-            for index, pattern in enumerate(configured)
+            (f"regex_{index + 1}", pattern) for index, pattern in enumerate(configured)
         )
 
     rules: list[RegexRule] = []

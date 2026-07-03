@@ -9,7 +9,7 @@ from hzltfw.core.plugin import ArtifactCreate, PluginContext
 
 class FileTypePlugin:
     name = "file_type"
-    version = "0.1.0"
+    version = "1.0.0"
     description = "Identify file types from magic bytes and flag extension mismatch."
     plugin_type = "file"
     artifact_types = ["file.type_mismatch"]
@@ -87,4 +87,3 @@ def _detect_candidates(path: Path) -> list[dict[str, Any]]:
         key=lambda candidate: candidate["confidence"] or 0,
         reverse=True,
     )
-

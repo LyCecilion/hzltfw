@@ -181,7 +181,7 @@ def _render_timeline(artifacts: list[Artifact], language: str) -> list[str]:
             lines.append(
                 f"- {artifact.timestamp.isoformat()} | "
                 f"{artifact.artifact_type} | {artifact.title}",
-        )
+            )
     else:
         lines.append(t("report.no_timeline", language=language))
     return lines
@@ -263,10 +263,7 @@ def _copy_external_reports(bundle_root: Path, artifacts: list[Artifact]) -> list
             continue
         tool_name = str(artifact.data_json.get("tool_name") or "external")
         destination = (
-            bundle_root
-            / "external"
-            / tool_name
-            / f"run-{artifact.plugin_run_id}"
+            bundle_root / "external" / tool_name / f"run-{artifact.plugin_run_id}"
         )
         copytree(source_dir, destination, dirs_exist_ok=True)
         links.append(_external_report_link(artifact, bundle_root, destination))

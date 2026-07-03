@@ -32,7 +32,7 @@ class UnsupportedExternalInputTypeError(ValueError):
 
 
 class ExternalForensicsPlugin:
-    version = "0.1.0"
+    version = "1.0.0"
     plugin_type = "evidence"
     artifact_types = ["external.report", "external.summary", "external.highlight"]
 
@@ -140,9 +140,7 @@ def _validate_input_type(
 
 def _external_run_dir(context: PluginContext, tool_name: str) -> Path:
     run_name = f"run-{context.plugin_run_id or context.evidence_id}"
-    path = (
-        context.workspace_path / "external_runs" / tool_name / run_name
-    ).resolve()
+    path = (context.workspace_path / "external_runs" / tool_name / run_name).resolve()
     path.mkdir(parents=True, exist_ok=True)
     return path
 

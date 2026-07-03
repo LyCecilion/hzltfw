@@ -158,7 +158,5 @@ def current_language() -> str:
 def t(key: str, *, language: str | None = None) -> str:
     selected = language or current_language()
     return (
-        TRANSLATIONS.get(selected, {}).get(key)
-        or TRANSLATIONS["en-US"].get(key)
-        or key
+        TRANSLATIONS.get(selected, {}).get(key) or TRANSLATIONS["en-US"].get(key) or key
     )

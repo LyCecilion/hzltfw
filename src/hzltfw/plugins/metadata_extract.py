@@ -22,7 +22,7 @@ PDF_DATE_LENGTH = 14
 
 class MetadataExtractPlugin:
     name = "metadata_extract"
-    version = "0.1.0"
+    version = "1.0.0"
     description = "Extract image, PDF, and DOCX metadata."
     plugin_type = "file"
     artifact_types = ["metadata.image", "metadata.pdf", "metadata.office"]
