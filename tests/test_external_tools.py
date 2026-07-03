@@ -59,7 +59,7 @@ def test_external_tool_health_and_run(tmp_path: Path) -> None:
     result = run_external_tool(
         tool_name="fake",
         command_prefix=command,
-        arguments=["--write-output"],
+        arguments=["-o", str(output_dir)],
         output_dir=output_dir,
     )
 
@@ -218,7 +218,12 @@ def _write_fake_tool(tmp_path: Path) -> Path:
         "if '--help' in sys.argv:\n"
         "    print('fake help')\n"
         "    raise SystemExit(0)\n"
-        "pathlib.Path('index.html').write_text('<html>ok</html>')\n"
+        "output = pathlib.Path.cwd()\n"
+        "for flag in ('-o', '--output_path'):\n"
+        "    if flag in sys.argv:\n"
+        "        output = pathlib.Path(sys.argv[sys.argv.index(flag) + 1])\n"
+        "output.mkdir(parents=True, exist_ok=True)\n"
+        "(output / 'index.html').write_text('<html>ok</html>')\n"
         "print('fake output')\n",
         encoding="utf-8",
     )
