@@ -53,6 +53,8 @@ uv sync --dev
 轻量 Git 协作流程、分支命名、PR 检查清单和 AI coding 规则见 [CONTRIBUTING.zh-CN.md](CONTRIBUTING.zh-CN.md)。
 
 插件开发应遵守 [PLUGIN_CONTACT.zh-CN.md](PLUGIN_CONTACT.zh-CN.md) 和 [PLUGIN_TASKS.zh-CN.md](PLUGIN_TASKS.zh-CN.md)。
+如果课程样本来自 Windows 镜像或 E01，请先导出选定文件，并参考
+[EVIDENCE_HANDOFF.zh-CN.md](EVIDENCE_HANDOFF.zh-CN.md) 的交接清单。
 
 ## 计划工具能力
 

@@ -47,6 +47,8 @@ branch naming rules, PR checklist, and AI coding rules.
 
 Plugin work should follow [PLUGIN_CONTACT.md](PLUGIN_CONTACT.md) and
 [PLUGIN_TASKS.md](PLUGIN_TASKS.md).
+For Windows image or E01-based coursework, export selected files first and use
+[EVIDENCE_HANDOFF.md](EVIDENCE_HANDOFF.md) as the handoff checklist.
 
 With Determinate Nix or another flakes-enabled Nix:
 
