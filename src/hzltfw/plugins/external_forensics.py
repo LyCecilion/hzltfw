@@ -68,7 +68,7 @@ class ExternalForensicsPlugin:
         output_dir = _external_run_dir(context, self.tool_name)
         arguments = _tool_arguments(
             self.tool_name,
-            input_path=Path(evidence.source_path),
+            input_path=Path(evidence.source_path).expanduser().resolve(),
             output_dir=output_dir,
             input_type=self.input_type,
         )
@@ -140,7 +140,9 @@ def _validate_input_type(
 
 def _external_run_dir(context: PluginContext, tool_name: str) -> Path:
     run_name = f"run-{context.plugin_run_id or context.evidence_id}"
-    path = context.workspace_path / "external_runs" / tool_name / run_name
+    path = (
+        context.workspace_path / "external_runs" / tool_name / run_name
+    ).resolve()
     path.mkdir(parents=True, exist_ok=True)
     return path
 

@@ -90,7 +90,7 @@ def run_external_tool(
     output_dir: str | Path,
     timeout_seconds: int | None = None,
 ) -> ExternalRunResult:
-    target_dir = Path(output_dir)
+    target_dir = Path(output_dir).expanduser().resolve()
     target_dir.mkdir(parents=True, exist_ok=True)
     command = [*command_prefix, *arguments]
     completed = subprocess.run(
