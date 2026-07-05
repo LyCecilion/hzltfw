@@ -67,7 +67,7 @@ Every plugin contribution must include:
 - Expected artifact examples.
 - Windows test notes.
 
-Use `PLUGIN_CONTACT.md` as the plugin contract reference.
+Use `docs/PLUGIN_CONTACT.md` as the plugin contract reference.
 
 ## Code Style
 
@@ -94,7 +94,7 @@ Use `PLUGIN_CONTACT.md` as the plugin contract reference.
 
 ## Git Workflow
 
-- Follow `CONTRIBUTING.md`.
+- Follow `docs/CONTRIBUTING.md`.
 - Never commit directly to `main`.
 - Every change must go through a pull request.
 - Keep branches short-lived and scoped to one task.

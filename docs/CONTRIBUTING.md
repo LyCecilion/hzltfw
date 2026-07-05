@@ -137,7 +137,7 @@ final
 ## Conflict Rules
 
 - Do not resolve conflicts by deleting another person's work unless the project lead confirms it.
-- If a conflict is in `pyproject.toml`, `core/models.py`, `core/plugin.py`, or `PLUGIN_CONTACT.md`, ask for review before merging.
+- If a conflict is in `pyproject.toml`, `core/models.py`, `core/plugin.py`, or `docs/PLUGIN_CONTACT.md`, ask for review before merging.
 - If two plugins need the same helper, put the helper under `src/hzltfw/utils/` or ask before duplicating logic.
 
 ## AI Coding Rules
@@ -146,7 +146,7 @@ AI-generated changes still need PR review.
 
 When using AI coding tools:
 
-- Point the tool to `AGENTS.md`, `ARCHITECTURE.md`, and `PLUGIN_CONTACT.md`.
+- Point the tool to `../AGENTS.md`, `ARCHITECTURE.md`, and `PLUGIN_CONTACT.md`.
 - Ask it to keep changes scoped to the branch task.
 - Review generated code before committing.
 - Run checks before opening the PR.

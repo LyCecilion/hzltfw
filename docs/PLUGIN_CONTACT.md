@@ -36,6 +36,15 @@ Examples:
 - `metadata_extract`
 - `browser_history`
 
+### External tool adapters
+
+Adapters such as `external_forensics` are implemented as `EvidencePlugin`
+classes. They may call a configured local command, but they still must return
+`ArtifactCreate` objects and must not write to the database or call the GUI.
+
+External tools are configured outside the repository in `.hzltfw/config.json`.
+Do not vendor external tool source trees or binaries into this repo.
+
 ## ArtifactCreate Fields
 
 ```text
@@ -70,6 +79,8 @@ Every plugin PR must include:
 - Minimal sample or sample description.
 - Expected artifact examples.
 - Windows test notes.
+- For external adapters: installation/configuration notes and expected output
+  files or report entry paths.
 
 ## Example Artifact
 

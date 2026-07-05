@@ -43,30 +43,28 @@ MVP 完成标准：
 用途：
 
 - 根据 magic bytes 检测文件类型。
-- 记录检测出的扩展名、MIME、显示名称和置信度。
 - 将扩展名不一致标记为关键 warning artifact。
+- 抑制扩展名正常匹配的普通 artifact，避免 artifact 列表刷屏。
 
 Artifact 类型：
 
-- `file.type`
 - `file.type_mismatch`
 
 MVP 完成标准：
 
-- 普通文件产出 `file.type` artifact。
+- 普通文件扩展名和检测结果一致时不产出 artifact。
 - 类似 `fake.jpg` 但内容是 PDF 或 ZIP bytes 的文件产出 `file.type_mismatch`。
 - mismatch artifact 使用 `severity="medium"` 且 `is_key=True`。
 
 ## `keyword_search`
 
-建议负责人任务。
+状态：已实现，作为内置演示正则规则的 `EvidencePlugin`。
 
 插件类型：`EvidencePlugin`。
 
 用途：
 
-- 对文本类文件搜索配置的关键词。
-- 支持简单正则。
+- 对文本类文件搜索内置演示正则。
 - 每个命中包含一小段上下文。
 - 默认跳过大型二进制文件。
 
@@ -74,31 +72,30 @@ MVP 完成标准：
 
 ```json
 {
-  "keywords": ["泄露", "密码", "课程资料"],
-  "regexes": ["[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}"]
+  "regexes": {
+    "email": "[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}"
+  }
 }
 ```
 
 Artifact 类型：
 
-- `keyword.hit`
 - `keyword.regex_hit`
 
 MVP 完成标准：
 
-- 含关键词的 `.txt` 样本能产出 hit artifact。
-- 含邮箱地址的样本能产出 regex hit artifact。
-- artifact 的 `data` 包含 `source_path`、`line_number`、`match` 和 `snippet`。
+- 含邮箱、手机号或学号的 `.txt` 样本能产出 regex hit artifact。
+- artifact 的公共字段包含 `source_path`，`data` 包含 `line_number`、`match` 和 `snippet`。
 
 ## `archive_index`
 
-建议负责人任务。
+状态：已实现 ZIP 索引，不自动解压。
 
 插件类型：`EvidencePlugin`。
 
 用途：
 
-- 优先索引 ZIP 文件。
+- 索引 ZIP 文件。
 - 有时间再支持 TAR。
 - ZIP/TAR 稳定后再通过 `py7zr` 加 7z。
 - MVP 不自动解压压缩包内容。
@@ -112,11 +109,11 @@ MVP 完成标准：
 
 - ZIP 样本能产出压缩包摘要 artifact。
 - 压缩包条目包含路径、解压后大小、压缩后大小和修改时间。
-- 可疑条目名可以打 `keyword` 或 `suspicious_name` 等 tag。
+- 可疑条目名会产出关键 `archive.entry` artifact，并带 `suspicious_name` 等 tag。
 
 ## `metadata_extract`
 
-建议负责人任务。
+状态：已实现图片、PDF 和 DOCX 元数据。
 
 插件类型：`FilePlugin`。
 
@@ -124,7 +121,7 @@ MVP 完成标准：
 
 - 通过 Pillow 提取图片元数据。
 - 通过 `pypdf` 提取 PDF 文档元数据。
-- 有时间再提取 Office 基础元数据。
+- 通过 `python-docx` 提取 DOCX core properties。
 
 Artifact 类型：
 
@@ -165,3 +162,27 @@ MVP 完成标准：
 砍功能规则：
 
 - 如果 Day 5 结束还不稳定，就保留为 planned/experimental，并从现场演示主线移除。
+
+## `external_forensics`
+
+状态：已实现为可选外部工具适配器。
+
+插件类型：`EvidencePlugin`。
+
+用途：
+
+- 运行本机配置好的 ALEAPP、iLEAPP 或 Hindsight 命令。
+- 将外部工具输出保存在 hzltfw 工作区。
+- 产出报告链接和摘要 artifact，不全量导入外部工具所有结果。
+
+Artifact 类型：
+
+- `external.report`
+- `external.highlight`
+
+MVP 完成标准：
+
+- 外部命令缺失时通过 health check 报告，不影响主流程。
+- fake external tool 测试能产出 `external.report` artifact。
+- 报告包会复制外部输出目录，并在 `report.md` 中链接。
+- Windows 和 Linux 用户都可以用不依赖 shell 语法的命令数组配置工具。

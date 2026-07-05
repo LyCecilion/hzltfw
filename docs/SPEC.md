@@ -22,13 +22,15 @@ A student is suspected of leaking course material. The prepared evidence sample 
 
 | Plugin | Purpose | MVP Status |
 | --- | --- | --- |
-| `hash_manifest` | MD5/SHA1/SHA256 and file manifest | Required |
-| `file_type` | Magic-byte detection and extension mismatch | Required, example FilePlugin |
-| `archive_index` | ZIP/TAR index and suspicious archive entry review | Required |
-| `metadata_extract` | EXIF, PDF, and Office metadata | Required |
-| `keyword_search` | Keyword and regex hits | Required |
-| `timeline` | Time-based artifact/report aggregation | Required capability |
-| `browser_history` | Chromium History parsing | Bonus |
+| `hash_manifest` | MD5/SHA1/SHA256 and file manifest | Implemented |
+| `file_type` | Magic-byte extension mismatch warnings | Implemented |
+| `keyword_search` | Built-in demo regex hits | Implemented |
+| `archive_index` | ZIP index and suspicious archive entry review | Implemented |
+| `metadata_extract` | Image EXIF, PDF metadata, and DOCX core properties | Implemented |
+| `external_forensics` | ALEAPP, iLEAPP, and Hindsight adapters | Implemented optional feature |
+| `handoff` | Inspect exported Windows evidence directories from Evidence page | Implemented support feature |
+| `timeline` | Time-based artifact/report aggregation | Implemented through report aggregation |
+| `browser_history` | Chromium History parsing | Bonus/planned |
 
 `timeline` may be implemented as artifact/report aggregation rather than a standalone plugin.
 
@@ -48,18 +50,24 @@ A student is suspected of leaking course material. The prepared evidence sample 
 | Regex search | `keyword_search` |
 | Image EXIF metadata | `metadata_extract` |
 | PDF metadata | `metadata_extract` |
+| DOCX metadata | `metadata_extract` |
 | Archive listing | `archive_index` |
+| Exported Windows evidence intake | `handoff` core, evidence UI |
 | Artifact review | artifacts GUI page |
 | Timeline generation | report/UI artifact aggregation |
 | Markdown report export | report generator |
+| Portable report bundle export | report generator |
+| ALEAPP/iLEAPP/Hindsight external reports | `external_forensics` |
 | Chromium History | `browser_history`, bonus |
 
 ## Degradation Rules
 
 - Day 7 is feature freeze.
 - If `browser_history` is incomplete by the end of Day 5, remove it from the live demo path and keep it as planned or experimental.
-- Archive recursion and extraction are not required for MVP. The first version indexes archive entries only.
+- Archive recursion and extraction are not required for MVP. The current version indexes ZIP entries only.
 - Full file manifest in reports is optional and controlled by an export option.
+- External tool outputs are optional and copied into report bundles when present.
+- E01, partition, and filesystem parsing are out of scope for the MVP. Export files with a dedicated forensic tool first, then inspect/import the exported directory.
 
 ## Sample Evidence Policy
 

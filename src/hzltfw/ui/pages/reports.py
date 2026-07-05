@@ -4,8 +4,9 @@ from nicegui import ui
 from sqlmodel import Session, select
 
 from hzltfw.core.models import Case
-from hzltfw.core.report import export_case_markdown
+from hzltfw.core.report import export_case_markdown, export_case_report_bundle
 from hzltfw.ui.pages.common import page_container, render_nav
+from hzltfw.utils.i18n import t
 
 
 def register_reports_page(engine) -> None:
@@ -13,7 +14,7 @@ def register_reports_page(engine) -> None:
     def reports_page() -> None:
         render_nav()
         with page_container():
-            ui.label("Reports").classes("text-2xl font-semibold")
+            ui.label(t("reports.title")).classes("text-2xl font-semibold")
 
             with Session(engine) as session:
                 cases = list(
@@ -24,21 +25,25 @@ def register_reports_page(engine) -> None:
             with ui.card().classes("w-full"):
                 case_select = ui.select(
                     options=case_options,
-                    label="Case",
+                    label=t("evidence.case"),
                     value=next(iter(case_options), None),
                 ).classes("w-full")
                 include_manifest = ui.checkbox(
-                    "Include full file manifest",
+                    t("reports.include_manifest"),
                     value=False,
                 )
                 output_path = ui.input(
-                    "Output path",
+                    t("reports.output_path"),
                     value=str(Path("reports") / "case-report.md"),
+                ).classes("w-full")
+                bundle_path = ui.input(
+                    t("reports.bundle_dir"),
+                    value=str(Path("reports") / "case-report-bundle"),
                 ).classes("w-full")
 
                 def export_report() -> None:
                     if not case_select.value:
-                        ui.notify("Create a case first.", type="warning")
+                        ui.notify(t("notify.create_case_first"), type="warning")
                         return
                     with Session(engine) as session:
                         path = export_case_markdown(
@@ -47,6 +52,21 @@ def register_reports_page(engine) -> None:
                             output_path.value,
                             include_manifest=include_manifest.value,
                         )
-                    ui.notify(f"Report exported: {path}")
+                    ui.notify(f"{t('notify.report_exported')}: {path}")
 
-                ui.button("Export Markdown", on_click=export_report)
+                ui.button(t("reports.export_markdown"), on_click=export_report)
+
+                def export_bundle() -> None:
+                    if not case_select.value:
+                        ui.notify(t("notify.create_case_first"), type="warning")
+                        return
+                    with Session(engine) as session:
+                        path = export_case_report_bundle(
+                            session,
+                            case_select.value,
+                            bundle_path.value,
+                            include_manifest=include_manifest.value,
+                        )
+                    ui.notify(f"{t('notify.bundle_exported')}: {path}")
+
+                ui.button(t("reports.export_bundle"), on_click=export_bundle)

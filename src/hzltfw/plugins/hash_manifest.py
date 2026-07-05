@@ -5,7 +5,7 @@ from hzltfw.utils.hashing import hash_file
 
 class HashManifestPlugin:
     name = "hash_manifest"
-    version = "0.1.0"
+    version = "1.0.0"
     description = "Generate MD5/SHA1/SHA256 hashes for indexed evidence files."
     plugin_type = "evidence"
     artifact_types = ["hash.manifest"]

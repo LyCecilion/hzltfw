@@ -43,30 +43,28 @@ Status: implemented as the first `FilePlugin` example.
 Purpose:
 
 - Detect file type from magic bytes.
-- Record detected extension, MIME type, display name, and confidence.
 - Flag extension mismatch as a key warning artifact.
+- Suppress normal extension matches to avoid noisy artifact lists.
 
 Artifact types:
 
-- `file.type`
 - `file.type_mismatch`
 
 MVP done when:
 
-- Normal files produce `file.type` artifacts.
+- Normal files do not produce artifacts when their extension matches detected type.
 - A fake file such as `fake.jpg` with PDF or ZIP bytes produces `file.type_mismatch`.
 - Mismatch artifacts use `severity="medium"` and `is_key=True`.
 
 ## `keyword_search`
 
-Recommended owner task.
+Status: implemented as an `EvidencePlugin` with built-in demo regex rules.
 
 Plugin kind: `EvidencePlugin`.
 
 Purpose:
 
-- Search text-like files for configured keywords.
-- Support simple regex patterns.
+- Search text-like files for built-in demonstration regex patterns.
 - Include a short context snippet around each hit.
 - Skip large binary files by default.
 
@@ -74,31 +72,30 @@ Suggested config:
 
 ```json
 {
-  "keywords": ["泄露", "密码", "课程资料"],
-  "regexes": ["[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}"]
+  "regexes": {
+    "email": "[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}"
+  }
 }
 ```
 
 Artifact types:
 
-- `keyword.hit`
 - `keyword.regex_hit`
 
 MVP done when:
 
-- A `.txt` sample with a keyword produces a hit artifact.
-- A sample email address produces a regex hit artifact.
-- Artifacts include `source_path`, `line_number`, `match`, and `snippet` in `data`.
+- A `.txt` sample with an email, phone number, or student ID produces regex hit artifacts.
+- Artifacts include `source_path` as a common field and `line_number`, `match`, and `snippet` in `data`.
 
 ## `archive_index`
 
-Recommended owner task.
+Status: implemented for ZIP indexing without extraction.
 
 Plugin kind: `EvidencePlugin`.
 
 Purpose:
 
-- Index ZIP files first.
+- Index ZIP files.
 - Add TAR support if time allows.
 - Add 7z support through `py7zr` only after ZIP/TAR are stable.
 - Do not auto-extract archive contents in MVP.
@@ -112,11 +109,11 @@ MVP done when:
 
 - A ZIP sample produces an archive summary artifact.
 - Archive entries include path, uncompressed size, compressed size if available, and modified time if available.
-- Suspicious entry names can be marked with tags such as `keyword` or `suspicious_name`.
+- Suspicious entry names produce key `archive.entry` artifacts with `suspicious_name` tags.
 
 ## `metadata_extract`
 
-Recommended owner task.
+Status: implemented for image, PDF, and DOCX metadata.
 
 Plugin kind: `FilePlugin`.
 
@@ -124,7 +121,7 @@ Purpose:
 
 - Extract image metadata through Pillow.
 - Extract PDF document metadata through `pypdf`.
-- Extract basic Office metadata if time allows.
+- Extract DOCX core properties through `python-docx`.
 
 Artifact types:
 
@@ -165,3 +162,31 @@ MVP done when:
 Cut rule:
 
 - If not stable by Day 5, keep the plugin planned or experimental and remove it from the live demo path.
+
+## `external_forensics`
+
+Status: implemented as optional external tool adapters.
+
+Plugin kind: `EvidencePlugin`.
+
+Purpose:
+
+- Run locally configured ALEAPP, iLEAPP, or Hindsight commands.
+- Keep external outputs in the hzltfw workspace.
+- Emit report-link and highlight artifacts without importing full external
+  result sets.
+
+Artifact types:
+
+- `external.report`
+- `external.highlight`
+
+MVP done when:
+
+- Missing external commands are reported by health check instead of crashing the
+  main workflow.
+- A fake external tool can run in tests and produce an `external.report`
+  artifact.
+- Report bundles copy external output folders and link them from `report.md`.
+- Windows and Linux users can configure command arrays without shell-specific
+  syntax.
