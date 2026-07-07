@@ -1,14 +1,19 @@
 from pathlib import Path
 
-from nicegui import ui
-
+# Apply engineio ASGI patch before NiceGUI initializes the Socket.IO app.
+# Must run before nicegui imports because NiceGUI creates the Socket.IO app
+# at module level.
+from hzltfw._engineio_patch import apply as _apply_eio_patch
 from hzltfw.core.database import create_db_engine, init_db, sqlite_url
 from hzltfw.ui.pages.analysis import register_analysis_page
 from hzltfw.ui.pages.artifacts import register_artifacts_page
 from hzltfw.ui.pages.cases import register_cases_page
 from hzltfw.ui.pages.evidence import register_evidence_page
 from hzltfw.ui.pages.reports import register_reports_page
-from hzltfw.utils.i18n import t
+
+_apply_eio_patch()
+
+from nicegui import ui
 
 
 def run_app(
