@@ -10,7 +10,7 @@ from hzltfw.core.models import EvidenceFile, EvidenceItem, PluginRun
 from hzltfw.core.runner import run_plugins_for_evidence
 from hzltfw.core.scanner import scan_evidence
 from hzltfw.plugins.external_forensics import ExternalForensicsPlugin
-from hzltfw.ui.pages.common import page_container, render_nav
+from hzltfw.ui.pages.common import page_container, page_header, render_shell
 from hzltfw.utils.i18n import t
 
 EXTERNAL_TOOL_OPTIONS = {
@@ -29,14 +29,90 @@ class InvalidCommandJsonError(ValueError):
 def register_analysis_page(engine) -> None:
     @ui.page("/analysis")
     def analysis_page() -> None:
-        render_nav()
+        render_shell("analysis")
+        page_header(t("analysis.title"), step=3)
+
         with page_container():
-            ui.label(t("analysis.title")).classes("text-2xl font-semibold")
             evidence_items, runs = _analysis_data(engine)
             evidence_options = _evidence_options(evidence_items)
-            _render_default_plugin_card(engine, evidence_options)
-            _render_external_tools_card(engine, evidence_options)
-            _render_runs_table(runs)
+
+            # ── Default Plugins Card ──
+            with ui.card().classes("w-full"):
+                ui.label(t("analysis.run_plugins")).classes(
+                    "text-lg font-semibold mb-4"
+                )
+                evidence_select = ui.select(
+                    options=evidence_options,
+                    label=t("evidence.title"),
+                    value=next(iter(evidence_options), None),
+                ).classes("w-full max-w-sm")
+
+                def run_analysis() -> None:
+                    evidence_id = evidence_select.value
+                    if not evidence_id:
+                        ui.notify(t("notify.add_evidence_first"), type="warning")
+                        return
+                    with Session(engine) as session:
+                        evidence = session.get(EvidenceItem, evidence_id)
+                        if evidence is None:
+                            ui.notify(t("notify.evidence_not_found"), type="negative")
+                            return
+                        if _first_indexed_file(session, evidence) is None:
+                            scan_evidence(session, evidence)
+                        run_plugins_for_evidence(session, evidence.id or 0)
+                    ui.notify(t("notify.analysis_finished"))
+                    ui.navigate.reload()
+
+                ui.button(t("analysis.default_plugins"), on_click=run_analysis).props(
+                    "color=primary mt-2"
+                )
+
+            # ── External Tools Card ──
+            with ui.card().classes("w-full mt-4"):
+                ui.label(t("analysis.external_tools")).classes(
+                    "text-lg font-semibold mb-4"
+                )
+
+                with ui.row().classes("gap-4 w-full flex-wrap"):
+                    evidence_select2 = ui.select(
+                        options=evidence_options,
+                        label=t("evidence.title"),
+                        value=next(iter(evidence_options), None),
+                    ).classes("min-w-40")
+                    tool_select = ui.select(
+                        options=EXTERNAL_TOOL_OPTIONS,
+                        label=t("analysis.tool"),
+                        value="aleapp",
+                    ).classes("min-w-40")
+                    input_type_select = ui.select(
+                        options=INPUT_TYPE_OPTIONS,
+                        label=t("analysis.input_type"),
+                        value="fs",
+                    ).classes("min-w-32")
+
+                health_table = _external_health_table()
+                suggestion_table = _external_suggestion_table()
+                _render_command_config()
+                _render_external_actions(
+                    engine=engine,
+                    evidence_select=evidence_select2,
+                    tool_select=tool_select,
+                    input_type_select=input_type_select,
+                    health_table=health_table,
+                    suggestion_table=suggestion_table,
+                )
+                _refresh_health_table(health_table)
+
+            # ── Plugin Run History ──
+            if runs:
+                ui.label(f"{t('analysis.title')}  ·  运行记录").classes(
+                    "hz-section-title mt-6"
+                )
+                _render_runs_table(runs)
+            else:
+                with ui.element("div").classes("hz-empty-state mt-8"):
+                    ui.label("🔬").classes("text-3xl mb-3")
+                    ui.label(t("common.no_artifacts")).classes("text-sm")
 
 
 def _analysis_data(engine) -> tuple[list[EvidenceItem], list[PluginRun]]:
@@ -50,75 +126,9 @@ def _analysis_data(engine) -> tuple[list[EvidenceItem], list[PluginRun]]:
 
 def _evidence_options(evidence_items: list[EvidenceItem]) -> dict[int | None, str]:
     return {
-        evidence.id: f"{evidence.id} - {evidence.name}" for evidence in evidence_items
+        evidence.id: f"#{evidence.id}  —  {evidence.name}"
+        for evidence in evidence_items
     }
-
-
-def _render_default_plugin_card(
-    engine,
-    evidence_options: dict[int | None, str],
-) -> None:
-    with ui.card().classes("w-full"):
-        ui.label(t("analysis.run_plugins")).classes("text-lg font-medium")
-        evidence_select = ui.select(
-            options=evidence_options,
-            label=t("evidence.title"),
-            value=next(iter(evidence_options), None),
-        ).classes("w-full")
-
-        def run_analysis() -> None:
-            evidence_id = evidence_select.value
-            if not evidence_id:
-                ui.notify(t("notify.add_evidence_first"), type="warning")
-                return
-            with Session(engine) as session:
-                evidence = session.get(EvidenceItem, evidence_id)
-                if evidence is None:
-                    ui.notify(t("notify.evidence_not_found"), type="negative")
-                    return
-                if _first_indexed_file(session, evidence) is None:
-                    scan_evidence(session, evidence)
-                run_plugins_for_evidence(session, evidence.id or 0)
-            ui.notify(t("notify.analysis_finished"))
-            ui.navigate.reload()
-
-        ui.button(t("analysis.default_plugins"), on_click=run_analysis)
-
-
-def _render_external_tools_card(
-    engine,
-    evidence_options: dict[int | None, str],
-) -> None:
-    with ui.card().classes("w-full"):
-        ui.label(t("analysis.external_tools")).classes("text-lg font-medium")
-        evidence_select = ui.select(
-            options=evidence_options,
-            label=t("evidence.title"),
-            value=next(iter(evidence_options), None),
-        ).classes("w-full")
-        tool_select = ui.select(
-            options=EXTERNAL_TOOL_OPTIONS,
-            label=t("analysis.tool"),
-            value="aleapp",
-        ).classes("w-full")
-        input_type_select = ui.select(
-            options=INPUT_TYPE_OPTIONS,
-            label=t("analysis.input_type"),
-            value="fs",
-        ).classes("w-full")
-
-        health_table = _external_health_table()
-        suggestion_table = _external_suggestion_table()
-        _render_command_config()
-        _render_external_actions(
-            engine=engine,
-            evidence_select=evidence_select,
-            tool_select=tool_select,
-            input_type_select=input_type_select,
-            health_table=health_table,
-            suggestion_table=suggestion_table,
-        )
-        _refresh_health_table(health_table)
 
 
 def _external_health_table():
@@ -231,7 +241,7 @@ def _render_external_actions(  # noqa: PLR0913
             ui.notify(t("notify.external_finished"))
         ui.navigate.reload()
 
-    with ui.row().classes("gap-2"):
+    with ui.row().classes("gap-2 mt-4"):
         ui.button(
             t("analysis.check_tools"),
             on_click=lambda: _refresh_health_table(health_table),
