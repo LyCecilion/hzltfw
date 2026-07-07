@@ -2,6 +2,19 @@
 
 [中文](RELEASE_NOTES.zh-CN.md)
 
+## v1.1.0
+
+`v1.1.0` is a stability release for the local NiceGUI application.
+
+### Changes
+
+- Added a narrow compatibility patch for an Engine.IO ASGI disconnect edge case
+  that could raise `KeyError: 'REQUEST_METHOD'` during local GUI use.
+- Added a regression test that simulates the disconnect event and verifies that
+  the patched handler exits without sending a response.
+- Kept the v1.0.0 coursework workflow, built-in plugins, external adapters, and
+  report export behavior unchanged.
+
 ## v1.0.0
 
 `v1.0.0` is the first formal coursework release of Hazelita Forensics
