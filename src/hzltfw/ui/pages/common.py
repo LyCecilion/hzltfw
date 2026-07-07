@@ -581,7 +581,7 @@ def _sidebar_steps(active_idx: int) -> None:
 
 def _sidebar_footer() -> None:
     with ui.element("div").classes("hz-sidebar-footer"):
-        ui.label("Hazelita FW  v1.0.0")
+        ui.label("hzltfw  v1.1.0")
 
 
 # ── Helpers ─────────────────────────────────────────────────────

@@ -191,11 +191,10 @@ uv run pytest
 
 ## 发布
 
-当前正式版本：`v1.0.0`。
+当前正式版本：`v1.1.0`。
 
-这是第一个大作业正式交付版本。该版本保留本地 NiceGUI 工作流，包含内置
-artifact 插件、可选 ALEAPP/iLEAPP/Hindsight 外部工具适配、中英双语主界面，
-并支持可携带报告包导出。发布范围、演示路径和已知边界见
+该版本保持本地 NiceGUI 课程演示工作流稳定，并加入 Engine.IO ASGI 断开连接
+崩溃的兼容修复。发布范围、演示路径和已知边界见
 [docs/RELEASE_NOTES.zh-CN.md](docs/RELEASE_NOTES.zh-CN.md)。
 
 ## 协作

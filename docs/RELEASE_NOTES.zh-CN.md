@@ -2,6 +2,18 @@
 
 [English](RELEASE_NOTES.md)
 
+## v1.1.0
+
+`v1.1.0` 是本地 NiceGUI 应用的稳定性版本。
+
+### 变更
+
+- 新增一个小范围 Engine.IO ASGI 断开连接兼容补丁，避免本地 GUI 使用过程中
+  出现 `KeyError: 'REQUEST_METHOD'`。
+- 新增回归测试，模拟断开连接事件，并验证补丁后的处理器会安静退出且不发送
+  响应。
+- 保持 v1.0.0 的课程演示工作流、内置插件、外部工具适配和报告导出行为不变。
+
 ## v1.0.0
 
 `v1.0.0` 是 Hazelita Forensics Workbench 的第一个大作业正式交付版本。

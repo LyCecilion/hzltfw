@@ -1,14 +1,18 @@
 from pathlib import Path
 
-from nicegui import ui
-
+from hzltfw._engineio_patch import apply_engineio_asgi_disconnect_patch
 from hzltfw.core.database import create_db_engine, init_db, sqlite_url
-from hzltfw.ui.pages.analysis import register_analysis_page
-from hzltfw.ui.pages.artifacts import register_artifacts_page
-from hzltfw.ui.pages.cases import register_cases_page
-from hzltfw.ui.pages.evidence import register_evidence_page
-from hzltfw.ui.pages.reports import register_reports_page
-from hzltfw.utils.i18n import t
+
+apply_engineio_asgi_disconnect_patch()
+
+from nicegui import ui  # noqa: E402
+
+from hzltfw.ui.pages.analysis import register_analysis_page  # noqa: E402
+from hzltfw.ui.pages.artifacts import register_artifacts_page  # noqa: E402
+from hzltfw.ui.pages.cases import register_cases_page  # noqa: E402
+from hzltfw.ui.pages.evidence import register_evidence_page  # noqa: E402
+from hzltfw.ui.pages.reports import register_reports_page  # noqa: E402
+from hzltfw.utils.i18n import t  # noqa: E402
 
 
 def run_app(
