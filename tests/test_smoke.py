@@ -9,6 +9,7 @@ from sqlmodel import Session, select
 from hzltfw import __version__
 from hzltfw.core.database import create_db_engine, init_db
 from hzltfw.core.models import Artifact, Case, EvidenceFile, EvidenceItem, PluginRun
+from hzltfw.core.records import delete_case_record, delete_evidence_record
 from hzltfw.core.report import export_case_markdown
 from hzltfw.core.runner import run_plugins_for_evidence
 from hzltfw.core.scanner import scan_evidence
@@ -80,6 +81,120 @@ def test_vertical_slice(tmp_path: Path) -> None:
     assert "keyword_search" in report
     assert "archive_index" in report
     assert "metadata_extract" in report
+
+
+def test_delete_evidence_record_removes_related_rows(tmp_path: Path) -> None:
+    engine = create_db_engine(f"sqlite:///{tmp_path / 'delete-evidence.db'}")
+    init_db(engine)
+
+    with Session(engine) as session:
+        case = Case(case_no="CASE-DEL-E", name="Delete Evidence")
+        session.add(case)
+        session.commit()
+        session.refresh(case)
+
+        evidence = EvidenceItem(
+            case_id=case.id or 0,
+            name="USB image",
+            source_path=str(tmp_path),
+            evidence_type="directory",
+        )
+        session.add(evidence)
+        session.commit()
+        session.refresh(evidence)
+
+        run = PluginRun(
+            case_id=case.id or 0,
+            evidence_id=evidence.id,
+            plugin_name="sample",
+            plugin_version="1.0",
+            status="success",
+        )
+        session.add(run)
+        session.commit()
+        session.refresh(run)
+
+        session.add(
+            EvidenceFile(
+                evidence_id=evidence.id or 0,
+                relative_path="a.txt",
+                virtual_path="USB image/a.txt",
+            )
+        )
+        session.add(
+            Artifact(
+                case_id=case.id or 0,
+                evidence_id=evidence.id,
+                plugin_run_id=run.id or 0,
+                artifact_type="sample",
+                title="Sample Artifact",
+            )
+        )
+        session.commit()
+
+        assert delete_evidence_record(session, evidence.id or 0)
+        assert session.get(EvidenceItem, evidence.id) is None
+        assert session.exec(select(EvidenceFile)).first() is None
+        assert session.exec(select(PluginRun)).first() is None
+        assert session.exec(select(Artifact)).first() is None
+        assert session.get(Case, case.id) is not None
+
+
+def test_delete_case_record_removes_related_rows(tmp_path: Path) -> None:
+    engine = create_db_engine(f"sqlite:///{tmp_path / 'delete-case.db'}")
+    init_db(engine)
+
+    with Session(engine) as session:
+        case = Case(case_no="CASE-DEL-C", name="Delete Case")
+        session.add(case)
+        session.commit()
+        session.refresh(case)
+
+        evidence = EvidenceItem(
+            case_id=case.id or 0,
+            name="Laptop export",
+            source_path=str(tmp_path),
+            evidence_type="directory",
+        )
+        session.add(evidence)
+        session.commit()
+        session.refresh(evidence)
+
+        run = PluginRun(
+            case_id=case.id or 0,
+            evidence_id=evidence.id,
+            plugin_name="sample",
+            plugin_version="1.0",
+            status="success",
+        )
+        session.add(run)
+        session.commit()
+        session.refresh(run)
+
+        session.add(
+            EvidenceFile(
+                evidence_id=evidence.id or 0,
+                relative_path="a.txt",
+                virtual_path="Laptop export/a.txt",
+            )
+        )
+        session.add(
+            Artifact(
+                case_id=case.id or 0,
+                evidence_id=evidence.id,
+                plugin_run_id=run.id or 0,
+                artifact_type="sample",
+                title="Sample Artifact",
+            )
+        )
+        session.commit()
+
+        assert delete_case_record(session, case.id or 0)
+        assert session.get(Case, case.id) is None
+        assert session.exec(select(EvidenceItem)).first() is None
+        assert session.exec(select(EvidenceFile)).first() is None
+        assert session.exec(select(PluginRun)).first() is None
+        assert session.exec(select(Artifact)).first() is None
 
 
 def _write_sample_evidence(evidence_dir: Path) -> None:
