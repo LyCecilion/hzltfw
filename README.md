@@ -8,6 +8,8 @@
 
 A local forensics workbench for electronic data forensics coursework
 
+[![Typing SVG](https://readme-typing-svg.demolab.com?font=Cascadia+Code&size=15&duration=3000&pause=500&color=2C81F7&center=true&vCenter=true&multiline=true&width=480&height=90&lines=From+the+sea+of+bits%2C+salvage+the+echoes+of+memory%2C;and+let+every+forgotten+byte+retell+the+truth;this+is+the+compass+woven+of+mistlight%2C;guiding+to+the+shore+named+%E2%80%98Veritas%E2%80%99.)](https://git.io/typing-svg)
+
 [中文](README.zh-CN.md)
 
 </div>
