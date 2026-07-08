@@ -201,13 +201,12 @@ uv run pytest
 
 ## Release
 
-Current release: `v1.0.0`.
+Current release: `v1.1.0`.
 
-This is the first formal coursework release. It keeps the local NiceGUI
-workflow, built-in artifact plugins, optional ALEAPP/iLEAPP/Hindsight adapters,
-Chinese/English UI text, and portable report-bundle export in one packageable
-desktop-friendly app. See [docs/RELEASE_NOTES.md](docs/RELEASE_NOTES.md) for
-the release scope, demo path, and known boundaries.
+This release keeps the local NiceGUI coursework workflow stable and includes a
+compatibility fix for an Engine.IO ASGI disconnect crash. See
+[docs/RELEASE_NOTES.md](docs/RELEASE_NOTES.md) for the release scope, demo
+path, and known boundaries.
 
 ## Collaboration
 
