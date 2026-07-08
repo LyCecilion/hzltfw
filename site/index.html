@@ -1,0 +1,212 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta
+      name="description"
+      content="Hazelita Forensics Workbench 是面向电子数据取证课程实训的本地取证工作台。"
+    />
+    <title>Hazelita Forensics Workbench</title>
+    <link rel="preconnect" href="https://lyriverse-assets.oss-cn-shanghai.aliyuncs.com" />
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <header class="site-header">
+      <a class="brand" href="#top" aria-label="Hazelita Forensics Workbench">
+        <span class="brand-mark">hz</span>
+        <span>hzltfw</span>
+      </a>
+      <nav class="nav" aria-label="主导航">
+        <a href="#features">功能</a>
+        <a href="#workflow">流程</a>
+        <a href="#plugins">插件</a>
+        <a href="#deploy">运行</a>
+        <a href="https://github.com/LyCecilion/hzltfw" target="_blank" rel="noreferrer">GitHub</a>
+      </nav>
+    </header>
+
+    <main id="top">
+      <section class="hero">
+        <img
+          class="hero-bg"
+          src="https://lyriverse-assets.oss-cn-shanghai.aliyuncs.com/assets/hzltfw/banner_full.png"
+          alt=""
+          aria-hidden="true"
+        />
+        <div class="hero-overlay"></div>
+        <div class="hero-content">
+          <p class="eyebrow">课程实训 · 本地运行 · 可复现演示</p>
+          <h1>Hazelita Forensics Workbench</h1>
+          <p class="hero-copy">
+            面向电子数据取证课程的大作业项目。创建案件、导入检材、运行插件、
+            审查 artifact，并导出 Markdown 报告或可携带报告包。
+          </p>
+          <div class="hero-actions">
+            <a class="button primary" href="#deploy">快速运行</a>
+            <a class="button secondary" href="#features">查看功能</a>
+            <a
+              class="button secondary"
+              href="https://github.com/LyCecilion/hzltfw"
+              target="_blank"
+              rel="noreferrer"
+            >
+              GitHub 仓库
+            </a>
+          </div>
+        </div>
+      </section>
+
+      <section class="section intro" aria-labelledby="intro-title">
+        <div>
+          <p class="section-kicker">定位</p>
+          <h2 id="intro-title">不是商业套件，是稳定的课堂演示闭环</h2>
+        </div>
+        <p>
+          hzltfw 聚焦「电子数据取证基础」课程场景。它不直接解析原始磁盘镜像或
+          E01，而是分析已经导出的文件、目录或压缩包，让演示流程保持轻量、可控、
+          跨平台。
+        </p>
+      </section>
+
+      <section id="features" class="section">
+        <div class="section-heading">
+          <p class="section-kicker">Capabilities</p>
+          <h2>最终交付功能</h2>
+        </div>
+        <div class="feature-grid">
+          <article class="feature-card">
+            <span class="icon">01</span>
+            <h3>本地 GUI 工作流</h3>
+            <p>NiceGUI 页面覆盖案件管理、证据采集、分析执行、发现审查和报告导出。</p>
+          </article>
+          <article class="feature-card">
+            <span class="icon">02</span>
+            <h3>证据索引</h3>
+            <p>支持文件、目录或压缩包路径导入，并将文件规范化索引到 evidence_files。</p>
+          </article>
+          <article class="feature-card">
+            <span class="icon">03</span>
+            <h3>Windows 导出检查</h3>
+            <p>导入前识别用户目录、浏览器 profile、注册表 hive、事件日志和回收站来源。</p>
+          </article>
+          <article class="feature-card">
+            <span class="icon">04</span>
+            <h3>统一发现审查</h3>
+            <p>按类型、级别、插件和关键发现筛选 artifact，同时保留原始 JSON 详情。</p>
+          </article>
+          <article class="feature-card">
+            <span class="icon">05</span>
+            <h3>外部工具适配</h3>
+            <p>可手动配置 ALEAPP、iLEAPP 和 Hindsight，并将输出链接进报告包。</p>
+          </article>
+          <article class="feature-card">
+            <span class="icon">06</span>
+            <h3>报告导出</h3>
+            <p>支持单文件 Markdown 报告，也支持复制外部输出的 portable report bundle。</p>
+          </article>
+        </div>
+      </section>
+
+      <section class="section screenshot-section">
+        <div class="section-heading">
+          <p class="section-kicker">Preview</p>
+          <h2>发现中心界面</h2>
+        </div>
+        <figure class="screenshot">
+          <img
+            src="https://lyriverse-assets.oss-cn-shanghai.aliyuncs.com/assets/hzltfw/demo.png"
+            alt="hzltfw 发现审查页面截图"
+          />
+        </figure>
+      </section>
+
+      <section id="workflow" class="section">
+        <div class="section-heading">
+          <p class="section-kicker">Workflow</p>
+          <h2>演示路径</h2>
+        </div>
+        <ol class="timeline">
+          <li>
+            <span>1</span>
+            <div>
+              <h3>创建案件</h3>
+              <p>记录案件编号、名称、调查员和说明。</p>
+            </div>
+          </li>
+          <li>
+            <span>2</span>
+            <div>
+              <h3>添加检材</h3>
+              <p>导入准备好的文件、目录或压缩包，必要时先检查 Windows 导出目录。</p>
+            </div>
+          </li>
+          <li>
+            <span>3</span>
+            <div>
+              <h3>运行分析</h3>
+              <p>执行默认内置插件，也可以手动运行配置好的外部取证工具。</p>
+            </div>
+          </li>
+          <li>
+            <span>4</span>
+            <div>
+              <h3>审查并导出</h3>
+              <p>筛选关键发现，导出 Markdown 报告或包含外部输出的报告包。</p>
+            </div>
+          </li>
+        </ol>
+      </section>
+
+      <section id="plugins" class="section split">
+        <div class="section-heading">
+          <p class="section-kicker">Plugins</p>
+          <h2>默认插件集合</h2>
+        </div>
+        <div class="plugin-table" role="table" aria-label="默认插件">
+          <div role="row">
+            <strong role="cell">hash_manifest</strong>
+            <span role="cell">MD5、SHA1、SHA256 和文件清单</span>
+          </div>
+          <div role="row">
+            <strong role="cell">file_type</strong>
+            <span role="cell">magic-byte 扩展名伪装检测</span>
+          </div>
+          <div role="row">
+            <strong role="cell">keyword_search</strong>
+            <span role="cell">邮箱、手机号、学号等演示正则命中</span>
+          </div>
+          <div role="row">
+            <strong role="cell">archive_index</strong>
+            <span role="cell">ZIP 条目索引和可疑条目名提示</span>
+          </div>
+          <div role="row">
+            <strong role="cell">metadata_extract</strong>
+            <span role="cell">图片 EXIF、PDF 元数据、DOCX core properties</span>
+          </div>
+        </div>
+      </section>
+
+      <section id="deploy" class="section deploy">
+        <div class="deploy-copy">
+          <p class="section-kicker">Run</p>
+          <h2>本地启动</h2>
+          <p>
+            hzltfw 使用 Python 3.12+、SQLite、SQLModel 和 uv。运行时数据保存在
+            当前目录的 .hzltfw/，适合课程演示和一次性样本分析。
+          </p>
+        </div>
+        <pre><code>uv sync
+uv run hzltfw</code></pre>
+      </section>
+    </main>
+
+    <footer class="footer">
+      <p>Hazelita Forensics Workbench · Coursework delivery project</p>
+      <div class="footer-links">
+        <a href="https://github.com/LyCecilion/hzltfw" target="_blank" rel="noreferrer">GitHub</a>
+        <a href="#top">回到顶部</a>
+      </div>
+    </footer>
+  </body>
+</html>
