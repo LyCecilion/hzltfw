@@ -9,11 +9,15 @@ src/hzltfw/
   cli.py
   app.py
   core/
+    config.py
     database.py
     exceptions.py
+    external_probe.py
+    external_tools.py
     handoff.py
     models.py
     plugin.py
+    records.py
     report.py
     runner.py
     scanner.py
@@ -26,6 +30,7 @@ src/hzltfw/
     keyword_search.py
     metadata_extract.py
   ui/
+    artifact_views.py
     pages/
       analysis.py
       artifacts.py
@@ -34,6 +39,7 @@ src/hzltfw/
       reports.py
   utils/
     hashing.py
+    i18n.py
     timestamps.py
 ```
 
@@ -154,9 +160,10 @@ There are two plugin kinds:
 
 Plugins must return `ArtifactCreate` values. They must not write to the database or call the GUI.
 
-Built-in plugins currently cover file hashes, extension mismatch warnings,
-regex-based keyword search, ZIP archive indexing, image/PDF/DOCX metadata, and
-optional external ALEAPP/iLEAPP/Hindsight adapters.
+The default built-in plugin run covers file hashes, extension mismatch warnings,
+regex-based keyword search, ZIP archive indexing, and image/PDF/DOCX metadata.
+External ALEAPP/iLEAPP/Hindsight adapters are launched manually from the
+Analysis page.
 
 External adapters still follow the plugin contract: they do not persist directly
 or call the GUI. They run configured local commands, store outputs in the case

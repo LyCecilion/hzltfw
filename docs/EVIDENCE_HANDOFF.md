@@ -3,7 +3,8 @@
 [中文](EVIDENCE_HANDOFF.zh-CN.md)
 
 `hzltfw` analyzes exported files and directories. It does not directly parse
-E01 images, partition tables, or NTFS filesystems in the MVP workflow.
+E01 images, partition tables, or NTFS filesystems in the final coursework
+release.
 
 Recommended workflow:
 
@@ -20,12 +21,12 @@ Recommended workflow:
 | Target | Example paths | Purpose |
 | --- | --- | --- |
 | User documents and desktop | `Users\<user>\Documents`, `Users\<user>\Desktop`, `Users\<user>\Downloads` | Documents, archives, downloads, and ordinary user files |
-| Chromium profile | `Users\<user>\AppData\Local\Google\Chrome\User Data\Default\History`, `Users\<user>\AppData\Local\Microsoft\Edge\User Data\Default\History` | Optional browser history parsing |
-| Recent shortcuts | `Users\<user>\AppData\Roaming\Microsoft\Windows\Recent` | Future LNK parsing |
-| Registry hives | `Users\<user>\NTUSER.DAT`, `Windows\System32\config\SOFTWARE`, `Windows\System32\config\SYSTEM` | Future registry quicklook |
-| Windows event logs | `Windows\System32\winevt\Logs\*.evtx` | Future EVTX summary |
-| Recycle Bin | `$Recycle.Bin` | Future deleted-file review |
-| Email and Office files | `*.msg`, `*.docx`, `*.xlsx`, `*.pptx` under user folders | Future email and Office suspicious-content plugins |
+| Chromium profile | `Users\<user>\AppData\Local\Google\Chrome\User Data\Default\History`, `Users\<user>\AppData\Local\Microsoft\Edge\User Data\Default\History` | Input for Hindsight or manual browser review |
+| Recent shortcuts | `Users\<user>\AppData\Roaming\Microsoft\Windows\Recent` | Intake checklist source; no built-in LNK parser |
+| Registry hives | `Users\<user>\NTUSER.DAT`, `Windows\System32\config\SOFTWARE`, `Windows\System32\config\SYSTEM` | Intake checklist source; review with external tools if needed |
+| Windows event logs | `Windows\System32\winevt\Logs\*.evtx` | Intake checklist source; review with external tools if needed |
+| Recycle Bin | `$Recycle.Bin` | Intake checklist source for deleted-file context |
+| Email and Office files | `*.msg`, `*.docx`, `*.xlsx`, `*.pptx` under user folders | Office metadata is extracted for DOCX; other formats stay as indexed files |
 
 ## Course Sample Rules
 

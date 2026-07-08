@@ -16,8 +16,8 @@
 
 ## v1.0.0
 
-`v1.0.0` 是 Hazelita Forensics Workbench 的第一个大作业正式交付版本。
-该版本面向可重复的本地课堂演示，不试图在第一版做成完整商业取证套件。
+`v1.0.0` 是 Hazelita Forensics Workbench 的大作业正式交付版本。
+该版本面向可重复的本地课堂演示，不试图做成完整商业取证套件。
 
 ### 发布范围
 
@@ -59,4 +59,5 @@
   artifact 数据库。
 - 压缩包能力保持轻量：当前关注 ZIP 条目索引，不把压缩包解压和递归分析作为
   发布要求。
-- Chromium History 解析仍是加分项，不应阻塞主演示流程。
+- 浏览器 profile 分析通过可选 Hindsight 外部适配器处理；本版本没有独立的
+  Chromium History 解析插件。

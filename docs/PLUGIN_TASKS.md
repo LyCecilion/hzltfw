@@ -1,127 +1,132 @@
-# Plugin Tasks
+# Built-In Plugins
 
 [中文](PLUGIN_TASKS.zh-CN.md)
 
-This file defines the expected plugin work for the MVP. Use it to create GitHub issues and PR checklists.
+This document records the final built-in plugin behavior for the coursework
+release. It is no longer a pending task list.
 
-## Common Completion Rules
+## Common Rules
 
-Every plugin must:
+Every plugin follows the contract in `src/hzltfw/core/plugin.py`:
 
-- Implement `EvidencePlugin` or `FilePlugin` from `src/hzltfw/core/plugin.py`.
+- Implement `EvidencePlugin` or `FilePlugin`.
 - Return `ArtifactCreate` objects only.
-- Avoid direct database writes.
-- Avoid GUI imports.
-- Use `EvidenceFile.relative_path`, `absolute_path`, and `virtual_path` instead of rescanning evidence roots.
-- Add at least one test or update `tests/test_smoke.py` with a minimal sample.
-- Document emitted artifact types in the PR.
-- Run on Windows.
+- Do not write to the database directly.
+- Do not import or call NiceGUI.
+- Use the `EvidenceFile` records produced by the core scanner instead of
+  recursively scanning evidence roots.
+- Keep Windows-compatible path handling.
+
+## Default Plugin Set
+
+`src/hzltfw/core/runner.py` runs these plugins by default:
+
+1. `hash_manifest`
+2. `file_type`
+3. `keyword_search`
+4. `archive_index`
+5. `metadata_extract`
+
+The `external_forensics` adapter is not part of the default run. It is launched
+manually from the Analysis page after the operator configures a tool command and
+chooses a tool/input type.
 
 ## `hash_manifest`
 
-Status: implemented as the first `EvidencePlugin` example.
+Kind: `EvidencePlugin`
 
 Purpose:
 
-- Generate a manifest for all indexed physical files.
+- Generate one manifest artifact for indexed physical files.
 - Calculate MD5, SHA1, and SHA256.
-- Include file size and timestamps.
+- Include file size, relative path, virtual path, and timestamps.
 
 Artifact types:
 
 - `hash.manifest`
 
-MVP done when:
+Expected artifact:
 
-- A directory evidence item produces one manifest artifact.
-- The report can include full manifest details when `include_manifest` is enabled.
+- Title: `Evidence hash manifest`
+- Severity: `info`
+- `data.files` contains one entry per hashed physical file.
 
 ## `file_type`
 
-Status: implemented as the first `FilePlugin` example.
+Kind: `FilePlugin`
 
 Purpose:
 
-- Detect file type from magic bytes.
-- Flag extension mismatch as a key warning artifact.
-- Suppress normal extension matches to avoid noisy artifact lists.
+- Detect file type from magic bytes with `puremagic`.
+- Emit artifacts only when the extension and detected type disagree.
+- Suppress normal matches to keep the discovery list useful.
 
 Artifact types:
 
 - `file.type_mismatch`
 
-MVP done when:
+Expected artifact:
 
-- Normal files do not produce artifacts when their extension matches detected type.
-- A fake file such as `fake.jpg` with PDF or ZIP bytes produces `file.type_mismatch`.
-- Mismatch artifacts use `severity="medium"` and `is_key=True`.
+- Severity: `medium`
+- `is_key`: `true`
+- `data` records the original extension, detected extension, MIME type, detected
+  name, and candidate extensions.
 
 ## `keyword_search`
 
-Status: implemented as an `EvidencePlugin` with built-in demo regex rules.
-
-Plugin kind: `EvidencePlugin`.
+Kind: `EvidencePlugin`
 
 Purpose:
 
-- Search text-like files for built-in demonstration regex patterns.
-- Include a short context snippet around each hit.
-- Skip large binary files by default.
-
-Suggested config:
-
-```json
-{
-  "regexes": {
-    "email": "[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}"
-  }
-}
-```
+- Search text-like files with built-in demonstration regex rules.
+- Default rules cover Chinese mobile numbers, email addresses, and demo student
+  IDs.
+- Skip virtual files, large files, and non-text extensions.
+- Include the line number, matched text, and context snippet.
 
 Artifact types:
 
 - `keyword.regex_hit`
 
-MVP done when:
+Expected artifact:
 
-- A `.txt` sample with an email, phone number, or student ID produces regex hit artifacts.
-- Artifacts include `source_path` as a common field and `line_number`, `match`, and `snippet` in `data`.
+- Severity: `medium`
+- `is_key`: `true`
+- `source_path` points to the matched file.
+- `data` includes `rule`, `pattern`, `line_number`, `match`, and `snippet`.
 
 ## `archive_index`
 
-Status: implemented for ZIP indexing without extraction.
-
-Plugin kind: `EvidencePlugin`.
+Kind: `EvidencePlugin`
 
 Purpose:
 
-- Index ZIP files.
-- Add TAR support if time allows.
-- Add 7z support through `py7zr` only after ZIP/TAR are stable.
-- Do not auto-extract archive contents in MVP.
+- Index ZIP archive entries without extracting them.
+- Produce one archive summary artifact per readable ZIP file.
+- Emit key artifacts for suspicious entry names that match built-in keywords or
+  the keyword-search regex rules.
 
 Artifact types:
 
 - `archive.index`
 - `archive.entry`
 
-MVP done when:
+Expected artifacts:
 
-- A ZIP sample produces an archive summary artifact.
-- Archive entries include path, uncompressed size, compressed size if available, and modified time if available.
-- Suspicious entry names produce key `archive.entry` artifacts with `suspicious_name` tags.
+- `archive.index` records entry count, file count, directory count, suspicious
+  entry count, and entry metadata.
+- `archive.entry` uses severity `medium`, `is_key=true`, and records the
+  archive path, entry data, and match reasons.
 
 ## `metadata_extract`
 
-Status: implemented for image, PDF, and DOCX metadata.
-
-Plugin kind: `FilePlugin`.
+Kind: `FilePlugin`
 
 Purpose:
 
-- Extract image metadata through Pillow.
-- Extract PDF document metadata through `pypdf`.
-- Extract DOCX core properties through `python-docx`.
+- Extract image metadata with Pillow.
+- Extract PDF document metadata and page count with `pypdf`.
+- Extract DOCX core properties with `python-docx`.
 
 Artifact types:
 
@@ -129,50 +134,22 @@ Artifact types:
 - `metadata.pdf`
 - `metadata.office`
 
-MVP done when:
+Expected artifacts:
 
-- A JPEG with EXIF produces camera/time metadata.
-- A PDF sample produces title, author, creator, producer, and page count if available.
-- Metadata artifacts use timestamp fields when reliable metadata time exists.
-
-## `browser_history`
-
-Bonus task. Do not let it block the main flow.
-
-Plugin kind: `FilePlugin`.
-
-Purpose:
-
-- Detect Chromium `History` SQLite databases.
-- Parse URL visits.
-- Optionally parse downloads if time allows.
-- Normalize Chromium timestamps.
-
-Artifact types:
-
-- `browser.history`
-- `browser.download`
-
-MVP done when:
-
-- A prepared Chromium `History` sample produces visit artifacts.
-- Each visit artifact includes URL, title, visit time, visit count if available, and source database path.
-- Artifacts can appear in the report timeline.
-
-Cut rule:
-
-- If not stable by Day 5, keep the plugin planned or experimental and remove it from the live demo path.
+- Image artifacts include format, mode, dimensions, and EXIF data when present.
+- PDF artifacts include metadata, page count, and parsed creation/modification
+  timestamps when available.
+- DOCX artifacts include core properties such as title, author, creation time,
+  modification time, and comments when present.
 
 ## `external_forensics`
 
-Status: implemented as optional external tool adapters.
-
-Plugin kind: `EvidencePlugin`.
+Kind: `EvidencePlugin`, launched manually
 
 Purpose:
 
 - Run locally configured ALEAPP, iLEAPP, or Hindsight commands.
-- Keep external outputs in the hzltfw workspace.
+- Keep external outputs in the case workspace.
 - Emit report-link and highlight artifacts without importing full external
   result sets.
 
@@ -181,12 +158,11 @@ Artifact types:
 - `external.report`
 - `external.highlight`
 
-MVP done when:
+Expected behavior:
 
-- Missing external commands are reported by health check instead of crashing the
-  main workflow.
-- A fake external tool can run in tests and produce an `external.report`
-  artifact.
+- Missing commands are reported through health checks or failed plugin runs
+  instead of breaking the default plugin flow.
+- Commands are JSON string arrays and run with `shell=False`.
+- Output is written under
+  `.hzltfw/workspace/case-<case-id>/external_runs/<tool>/run-<plugin-run-id>/`.
 - Report bundles copy external output folders and link them from `report.md`.
-- Windows and Linux users can configure command arrays without shell-specific
-  syntax.

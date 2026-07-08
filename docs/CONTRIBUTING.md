@@ -2,33 +2,31 @@
 
 [中文](CONTRIBUTING.zh-CN.md)
 
-This project uses a lightweight PR-based workflow. Do not push feature work directly to `main`.
+This project uses a lightweight PR-based workflow. The coursework development
+cycle has ended, so the repository no longer accepts feature PRs. Maintenance
+fixes, documentation corrections, and release cleanup should still avoid direct
+pushes to `main`.
 
 ## Branch Model
 
 - `main` is the stable integration branch.
 - Every change must be made on a short-lived branch and merged through a pull request.
-- Keep branches focused. One branch should solve one task or one plugin.
+- Keep branches focused. One branch should solve one maintenance task.
 - Delete branches after merge.
 
 Suggested branch names:
 
 ```text
-core/scanner
-core/plugin-runner
-ui/artifacts-page
-plugin/hash-manifest
-plugin/file-type
-plugin/keyword-search
 docs/git-workflow
 fix/windows-paths
+fix/report-export
+test/engineio-disconnect
 ```
 
 Use prefixes consistently:
 
 - `core/` for database, scanner, runner, report, and shared architecture.
 - `ui/` for NiceGUI pages and components.
-- `plugin/` for analysis plugins.
 - `docs/` for documentation.
 - `fix/` for bug fixes.
 - `test/` for test-only work.
@@ -45,7 +43,7 @@ Use prefixes consistently:
 2. Create a branch.
 
    ```bash
-   git switch -c plugin/file-type
+   git switch -c fix/report-export
    ```
 
 3. Commit small, related changes.
@@ -53,13 +51,13 @@ Use prefixes consistently:
    ```bash
    git status
    git add .
-   git commit -m "Add file type plugin skeleton"
+   git commit -m "fix: handle report export path"
    ```
 
 4. Push the branch.
 
    ```bash
-   git push -u origin plugin/file-type
+   git push -u origin fix/report-export
    ```
 
 5. Open a pull request.
@@ -75,7 +73,7 @@ Every PR must include:
 - What changed.
 - How to test it.
 - Screenshots for visible GUI changes.
-- Plugin contract notes for plugin changes.
+- Plugin contract notes if a maintenance change touches plugin behavior.
 - Windows test notes if the change touches paths, files, SQLite, or dependencies.
 
 Do not merge a PR if:
@@ -91,8 +89,9 @@ Do not merge a PR if:
 
 - No direct commits to `main`.
 - No force push to `main`.
-- No large unreviewed rewrites during the final two days.
-- Day 7 is feature freeze. After that, only bug fixes, documentation fixes, sample/report fixes, and demo stabilization should be merged.
+- No large unreviewed rewrites.
+- Feature development is closed. Only bug fixes, documentation fixes,
+  sample/report fixes, and release stabilization should be merged.
 
 ## Keeping Branches Updated
 

@@ -2,8 +2,8 @@
 
 [English](EVIDENCE_HANDOFF.md)
 
-`hzltfw` 分析的是已经导出的文件和目录。MVP 工作流不直接解析 E01
-镜像、分区表或 NTFS 文件系统。
+`hzltfw` 分析的是已经导出的文件和目录。课程交付版不直接解析 E01 镜像、
+分区表或 NTFS 文件系统。
 
 推荐流程：
 
@@ -20,12 +20,12 @@
 | 目标 | 示例路径 | 用途 |
 | --- | --- | --- |
 | 用户文档和桌面 | `Users\<user>\Documents`, `Users\<user>\Desktop`, `Users\<user>\Downloads` | 文档、压缩包、下载文件和普通用户文件 |
-| Chromium 配置 | `Users\<user>\AppData\Local\Google\Chrome\User Data\Default\History`, `Users\<user>\AppData\Local\Microsoft\Edge\User Data\Default\History` | 可选浏览器历史解析 |
-| 最近使用快捷方式 | `Users\<user>\AppData\Roaming\Microsoft\Windows\Recent` | 后续 LNK 解析 |
-| 注册表 hive | `Users\<user>\NTUSER.DAT`, `Windows\System32\config\SOFTWARE`, `Windows\System32\config\SYSTEM` | 后续注册表速览 |
-| Windows 事件日志 | `Windows\System32\winevt\Logs\*.evtx` | 后续 EVTX 摘要 |
-| 回收站 | `$Recycle.Bin` | 后续删除文件审查 |
-| 邮件和 Office 文件 | 用户目录下的 `*.msg`, `*.docx`, `*.xlsx`, `*.pptx` | 后续邮件和 Office 可疑内容插件 |
+| Chromium 配置 | `Users\<user>\AppData\Local\Google\Chrome\User Data\Default\History`, `Users\<user>\AppData\Local\Microsoft\Edge\User Data\Default\History` | 可交给 Hindsight 或手动浏览器痕迹审查 |
+| 最近使用快捷方式 | `Users\<user>\AppData\Roaming\Microsoft\Windows\Recent` | 摄取清单来源；没有内置 LNK 解析器 |
+| 注册表 hive | `Users\<user>\NTUSER.DAT`, `Windows\System32\config\SOFTWARE`, `Windows\System32\config\SYSTEM` | 摄取清单来源；需要时交给外部工具审查 |
+| Windows 事件日志 | `Windows\System32\winevt\Logs\*.evtx` | 摄取清单来源；需要时交给外部工具审查 |
+| 回收站 | `$Recycle.Bin` | 用于删除文件语境的摄取清单来源 |
+| 邮件和 Office 文件 | 用户目录下的 `*.msg`, `*.docx`, `*.xlsx`, `*.pptx` | 内置插件提取 DOCX 元数据；其他格式作为索引文件保留 |
 
 ## 课程样本规则
 
