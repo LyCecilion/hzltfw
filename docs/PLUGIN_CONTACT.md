@@ -34,7 +34,6 @@ Examples:
 
 - `file_type`
 - `metadata_extract`
-- `browser_history`
 
 ### External tool adapters
 
@@ -68,9 +67,10 @@ Use common fields for display and search. Put plugin-specific details in `data`.
 - `medium`: suspicious findings, keyword hits, extension mismatch.
 - `high`: strong key finding for the demonstration story.
 
-## Required PR Contents
+## Maintenance PR Contents
 
-Every plugin PR must include:
+The project no longer accepts feature PRs. If a maintenance PR changes plugin
+behavior, it must include:
 
 - Plugin name and purpose.
 - Supported inputs.

@@ -65,8 +65,8 @@ WINDOWS_HANDOFF_TARGETS = [
             "users/*/appdata/local/microsoft/edge/user data/*/history",
         ],
         purpose="Find browser visit and download history databases.",
-        plugins=["browser_history"],
-        notes="Bonus path; do not block the MVP demo on this artifact.",
+        plugins=["external_forensics"],
+        notes="Use the Hindsight external adapter or manual browser review.",
     ),
     HandoffTarget(
         category="Recent shortcuts",
@@ -77,8 +77,7 @@ WINDOWS_HANDOFF_TARGETS = [
             "users/*/appdata/roaming/microsoft/windows/recent/*.lnk",
         ],
         purpose="Find LNK shortcuts that can indicate recently opened files.",
-        plugins=["lnk_parser"],
-        notes="Future plugin target.",
+        notes="Intake-only source; no built-in LNK parser is included.",
     ),
     HandoffTarget(
         category="Registry hives",
@@ -93,24 +92,21 @@ WINDOWS_HANDOFF_TARGETS = [
             "windows/system32/config/system",
         ],
         purpose="Find user and system registry hives for recent activity review.",
-        plugins=["registry_quicklook"],
-        notes="Future plugin target; import hive files as-is.",
+        notes="Intake-only source; review with external tools if needed.",
     ),
     HandoffTarget(
         category="Windows event logs",
         display_paths=[r"Windows\System32\winevt\Logs\*.evtx"],
         match_patterns=["windows/system32/winevt/logs/*.evtx"],
         purpose="Find login, system, service, and device event logs.",
-        plugins=["evtx_summary"],
-        notes="Future plugin target; keep original EVTX files.",
+        notes="Intake-only source; review with external tools if needed.",
     ),
     HandoffTarget(
         category="Recycle Bin",
         display_paths=[r"$Recycle.Bin"],
         match_patterns=["$recycle.bin", "$recycle.bin/**"],
         purpose="Find deleted-file metadata and recoverable deleted content.",
-        plugins=["recycle_bin"],
-        notes="Future plugin target; preserve SID subdirectories.",
+        notes="Intake-only source; preserve SID subdirectories.",
     ),
     HandoffTarget(
         category="Email and office files",
@@ -135,7 +131,8 @@ WINDOWS_HANDOFF_TARGETS = [
             "users/*/downloads/**/*.msg",
         ],
         purpose="Find documents and messages that may contain leakage evidence.",
-        plugins=["metadata_extract", "email_msg", "office_suspicious"],
+        plugins=["metadata_extract"],
+        notes="DOCX metadata is supported; other office/email files are indexed.",
     ),
 ]
 
@@ -210,7 +207,7 @@ def render_handoff_markdown(  # noqa: PLR0913
         "exported directory and analyzes its files.",
         "",
         "hzltfw does not directly parse E01 images, partition tables, or NTFS "
-        "filesystems in the MVP workflow.",
+        "filesystems in the final coursework release.",
         "",
         "## Case",
         "",

@@ -1,127 +1,125 @@
-# 插件任务
+# 内置插件
 
 [English](PLUGIN_TASKS.md)
 
-本文档定义 MVP 阶段各插件的预期工作。可以直接拿来开 GitHub issue 和 PR checklist。
+本文档记录课程交付版最终保留的内置插件行为。它已经不是待办任务清单。
 
-## 通用完成规则
+## 通用规则
 
-每个插件必须：
+每个插件都遵守 `src/hzltfw/core/plugin.py` 中的契约：
 
-- 实现 `src/hzltfw/core/plugin.py` 中的 `EvidencePlugin` 或 `FilePlugin`。
+- 实现 `EvidencePlugin` 或 `FilePlugin`。
 - 只返回 `ArtifactCreate` 对象。
 - 不直接写数据库。
-- 不 import GUI。
-- 使用 `EvidenceFile.relative_path`、`absolute_path` 和 `virtual_path`，不要重新扫描检材根目录。
-- 至少添加一个测试，或用最小样本更新 `tests/test_smoke.py`。
-- 在 PR 中说明会产出的 artifact 类型。
-- 能在 Windows 上运行。
+- 不 import 或调用 NiceGUI。
+- 使用 core scanner 生成的 `EvidenceFile` 记录，不自行递归扫描检材根目录。
+- 保持 Windows 兼容的路径处理。
+
+## 默认插件集合
+
+`src/hzltfw/core/runner.py` 默认运行这些插件：
+
+1. `hash_manifest`
+2. `file_type`
+3. `keyword_search`
+4. `archive_index`
+5. `metadata_extract`
+
+`external_forensics` 不属于默认运行集合。操作员需要先在 Analysis 页面配置工具
+命令，再手动选择工具和输入类型启动外部分析。
 
 ## `hash_manifest`
 
-状态：已实现，是第一个 `EvidencePlugin` 示例。
+类型：`EvidencePlugin`
 
 用途：
 
-- 为所有已索引的物理文件生成 manifest。
+- 为已索引的物理文件生成一个 manifest artifact。
 - 计算 MD5、SHA1 和 SHA256。
-- 包含文件大小和时间戳。
+- 包含文件大小、相对路径、虚拟路径和时间戳。
 
 Artifact 类型：
 
 - `hash.manifest`
 
-MVP 完成标准：
+预期 artifact：
 
-- 一个目录检材能产出一个 manifest artifact。
-- 开启 `include_manifest` 时，报告可以包含完整 manifest。
+- 标题：`Evidence hash manifest`
+- 严重级别：`info`
+- `data.files` 为每个已哈希物理文件保存一条记录。
 
 ## `file_type`
 
-状态：已实现，是第一个 `FilePlugin` 示例。
+类型：`FilePlugin`
 
 用途：
 
-- 根据 magic bytes 检测文件类型。
-- 将扩展名不一致标记为关键 warning artifact。
-- 抑制扩展名正常匹配的普通 artifact，避免 artifact 列表刷屏。
+- 使用 `puremagic` 按 magic bytes 检测文件类型。
+- 仅在扩展名与检测结果不一致时产出 artifact。
+- 抑制正常匹配，避免发现列表刷屏。
 
 Artifact 类型：
 
 - `file.type_mismatch`
 
-MVP 完成标准：
+预期 artifact：
 
-- 普通文件扩展名和检测结果一致时不产出 artifact。
-- 类似 `fake.jpg` 但内容是 PDF 或 ZIP bytes 的文件产出 `file.type_mismatch`。
-- mismatch artifact 使用 `severity="medium"` 且 `is_key=True`。
+- 严重级别：`medium`
+- `is_key`: `true`
+- `data` 记录原扩展名、检测扩展名、MIME 类型、检测名称和候选扩展名。
 
 ## `keyword_search`
 
-状态：已实现，作为内置演示正则规则的 `EvidencePlugin`。
-
-插件类型：`EvidencePlugin`。
+类型：`EvidencePlugin`
 
 用途：
 
-- 对文本类文件搜索内置演示正则。
-- 每个命中包含一小段上下文。
-- 默认跳过大型二进制文件。
-
-建议配置：
-
-```json
-{
-  "regexes": {
-    "email": "[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}"
-  }
-}
-```
+- 使用内置演示正则搜索文本类文件。
+- 默认规则覆盖中国手机号、邮箱和演示学号。
+- 跳过虚拟文件、大文件和非文本扩展名。
+- 包含行号、命中文本和上下文片段。
 
 Artifact 类型：
 
 - `keyword.regex_hit`
 
-MVP 完成标准：
+预期 artifact：
 
-- 含邮箱、手机号或学号的 `.txt` 样本能产出 regex hit artifact。
-- artifact 的公共字段包含 `source_path`，`data` 包含 `line_number`、`match` 和 `snippet`。
+- 严重级别：`medium`
+- `is_key`: `true`
+- `source_path` 指向命中文件。
+- `data` 包含 `rule`、`pattern`、`line_number`、`match` 和 `snippet`。
 
 ## `archive_index`
 
-状态：已实现 ZIP 索引，不自动解压。
-
-插件类型：`EvidencePlugin`。
+类型：`EvidencePlugin`
 
 用途：
 
-- 索引 ZIP 文件。
-- 有时间再支持 TAR。
-- ZIP/TAR 稳定后再通过 `py7zr` 加 7z。
-- MVP 不自动解压压缩包内容。
+- 索引 ZIP 压缩包条目，但不解压。
+- 每个可读 ZIP 文件产出一个压缩包摘要 artifact。
+- 对命中内置关键词或 keyword-search 正则的可疑条目名产出关键 artifact。
 
 Artifact 类型：
 
 - `archive.index`
 - `archive.entry`
 
-MVP 完成标准：
+预期 artifact：
 
-- ZIP 样本能产出压缩包摘要 artifact。
-- 压缩包条目包含路径、解压后大小、压缩后大小和修改时间。
-- 可疑条目名会产出关键 `archive.entry` artifact，并带 `suspicious_name` 等 tag。
+- `archive.index` 记录条目数、文件数、目录数、可疑条目数和条目元数据。
+- `archive.entry` 使用 `medium` 严重级别、`is_key=true`，并记录压缩包路径、
+  条目信息和命中原因。
 
 ## `metadata_extract`
 
-状态：已实现图片、PDF 和 DOCX 元数据。
-
-插件类型：`FilePlugin`。
+类型：`FilePlugin`
 
 用途：
 
-- 通过 Pillow 提取图片元数据。
-- 通过 `pypdf` 提取 PDF 文档元数据。
-- 通过 `python-docx` 提取 DOCX core properties。
+- 使用 Pillow 提取图片元数据。
+- 使用 `pypdf` 提取 PDF 文档元数据和页数。
+- 使用 `python-docx` 提取 DOCX core properties。
 
 Artifact 类型：
 
@@ -129,60 +127,33 @@ Artifact 类型：
 - `metadata.pdf`
 - `metadata.office`
 
-MVP 完成标准：
+预期 artifact：
 
-- 带 EXIF 的 JPEG 能产出相机/时间元数据。
-- PDF 样本能产出 title、author、creator、producer、页数等信息。
-- 元数据时间可靠时，artifact 使用 timestamp 字段。
-
-## `browser_history`
-
-加分项。不得阻塞主流程。
-
-插件类型：`FilePlugin`。
-
-用途：
-
-- 识别 Chromium `History` SQLite 数据库。
-- 解析 URL 访问记录。
-- 有时间再解析下载记录。
-- 规范化 Chromium 时间戳。
-
-Artifact 类型：
-
-- `browser.history`
-- `browser.download`
-
-MVP 完成标准：
-
-- 准备好的 Chromium `History` 样本能产出访问记录 artifact。
-- 每条访问记录包含 URL、标题、访问时间、访问次数和源数据库路径。
-- artifact 能进入报告时间线。
-
-砍功能规则：
-
-- 如果 Day 5 结束还不稳定，就保留为 planned/experimental，并从现场演示主线移除。
+- 图片 artifact 包含格式、模式、尺寸和可用 EXIF。
+- PDF artifact 包含 metadata、页数和可解析的创建/修改时间。
+- DOCX artifact 包含标题、作者、创建时间、修改时间和 comments 等 core
+  properties。
 
 ## `external_forensics`
 
-状态：已实现为可选外部工具适配器。
-
-插件类型：`EvidencePlugin`。
+类型：`EvidencePlugin`，手动启动
 
 用途：
 
 - 运行本机配置好的 ALEAPP、iLEAPP 或 Hindsight 命令。
-- 将外部工具输出保存在 hzltfw 工作区。
-- 产出报告链接和摘要 artifact，不全量导入外部工具所有结果。
+- 将外部工具输出保存在案件工作区。
+- 产出报告链接和 highlight artifact，不全量导入外部工具所有结果。
 
 Artifact 类型：
 
 - `external.report`
 - `external.highlight`
 
-MVP 完成标准：
+预期行为：
 
-- 外部命令缺失时通过 health check 报告，不影响主流程。
-- fake external tool 测试能产出 `external.report` artifact。
+- 外部命令缺失时通过 health check 或失败的 plugin run 报告，不影响默认插件
+  流程。
+- 命令是 JSON 字符串数组，并使用 `shell=False` 运行。
+- 输出写入
+  `.hzltfw/workspace/case-<case-id>/external_runs/<tool>/run-<plugin-run-id>/`。
 - 报告包会复制外部输出目录，并在 `report.md` 中链接。
-- Windows 和 Linux 用户都可以用不依赖 shell 语法的命令数组配置工具。

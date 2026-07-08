@@ -86,12 +86,6 @@
 - 运行测试：`uv run pytest`
 - Lint：`uv run ruff check .`
 
-## 工期纪律
-
-- Day 7 功能冻结。
-- Chromium History 是加分项。如果 Day 5 仍未完成，保留接口占位，主流程继续工作。
-- 不要为了压缩包递归、专属 artifact 页面或高级报告样式阻塞主流程。
-
 ## Git 工作流
 
 - 遵守 `docs/CONTRIBUTING.zh-CN.md`。

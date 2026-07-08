@@ -2,33 +2,29 @@
 
 [English](CONTRIBUTING.md)
 
-本项目使用轻量 PR 协作流程。不要直接把功能代码 push 到 `main`。
+本项目使用轻量 PR 协作流程。课程开发周期已经结束，仓库不再接受 feature PR。
+维护性修复、文档修正和发布整理仍然不要直接 push 到 `main`。
 
 ## 分支模型
 
 - `main` 是稳定集成分支。
 - 所有改动都必须在短生命周期分支上完成，并通过 Pull Request 合并。
-- 分支要聚焦。一个分支只解决一个任务或一个插件。
+- 分支要聚焦。一个分支只解决一个维护任务。
 - 分支合并后删除。
 
 推荐分支命名：
 
 ```text
-core/scanner
-core/plugin-runner
-ui/artifacts-page
-plugin/hash-manifest
-plugin/file-type
-plugin/keyword-search
 docs/git-workflow
 fix/windows-paths
+fix/report-export
+test/engineio-disconnect
 ```
 
 前缀含义：
 
 - `core/`：数据库、扫描器、runner、报告、共享架构。
 - `ui/`：NiceGUI 页面和组件。
-- `plugin/`：分析插件。
 - `docs/`：文档。
 - `fix/`：bug 修复。
 - `test/`：只改测试。
@@ -45,7 +41,7 @@ fix/windows-paths
 2. 创建分支。
 
    ```bash
-   git switch -c plugin/file-type
+   git switch -c fix/report-export
    ```
 
 3. 提交小而相关的改动。
@@ -53,13 +49,13 @@ fix/windows-paths
    ```bash
    git status
    git add .
-   git commit -m "feat: add file type plugin"
+   git commit -m "fix: handle report export path"
    ```
 
 4. 推送分支。
 
    ```bash
-   git push -u origin plugin/file-type
+   git push -u origin fix/report-export
    ```
 
 5. 打开 Pull Request。
@@ -75,7 +71,7 @@ fix/windows-paths
 - 改了什么。
 - 怎么测试。
 - GUI 可见改动要附截图。
-- 插件改动要说明插件契约相关内容。
+- 如果维护改动影响插件行为，要说明插件契约相关内容。
 - 如果改动涉及路径、文件、SQLite 或依赖，要写 Windows 测试说明。
 
 以下情况不要合并：
@@ -91,8 +87,8 @@ fix/windows-paths
 
 - 不允许直接 commit 到 `main`。
 - 不允许 force push 到 `main`。
-- 最后两天不要合并大规模、未 review 的重写。
-- Day 7 功能冻结。之后只合并 bug 修复、文档修复、样本/报告修复和演示稳定性改动。
+- 不要合并大规模、未 review 的重写。
+- 功能开发已经关闭。之后只合并 bug 修复、文档修复、样本/报告修复和发布稳定性改动。
 
 ## 更新分支
 

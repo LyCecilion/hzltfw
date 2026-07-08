@@ -1,80 +1,89 @@
-# Hazelita Forensics Workbench Specification
+# Hazelita Forensics Workbench Final Specification
 
 ## Goal
 
-`hzltfw` serves an electronic data forensics course practice scenario. It is not trying to be a full professional forensic suite in the first release. The first release must support a repeatable live demonstration over a prepared Windows-style evidence sample.
+`hzltfw` serves an electronic data forensics course practice scenario. The final
+coursework release is a local, repeatable demonstration workbench, not a full
+professional forensic suite.
 
-## MVP Demonstration Story
+## Demonstration Story
 
-A student is suspected of leaking course material. The prepared evidence sample contains ordinary files, downloaded archives, suspicious renamed files, metadata-bearing documents or images, and optionally a Chromium `History` database. The workbench imports the sample, runs analysis plugins, presents normalized artifacts, and exports a Markdown report.
+A prepared sample contains ordinary user files, downloaded archives, suspicious
+renamed files, metadata-bearing documents or images, and optional exported
+mobile/browser artifacts for external tools. The workbench imports the sample,
+scans files, runs analysis plugins, presents normalized artifacts, and exports a
+Markdown report or portable report bundle.
 
-## Must-Have Flow
+## Supported Flow
 
-1. Create a case.
-2. Add evidence from a file or directory path.
+1. Create, list, and delete cases.
+2. Add file or directory evidence by path.
 3. Scan evidence into normalized `evidence_files`.
-4. Run analysis plugins.
-5. Persist plugin runs and artifacts.
-6. Review artifacts in a local GUI.
-7. Export a Markdown report.
+4. Optionally inspect an exported Windows directory before adding it.
+5. Run the default built-in plugins.
+6. Optionally run configured ALEAPP, iLEAPP, or Hindsight external adapters.
+7. Persist plugin runs and artifacts.
+8. Review artifacts in the local NiceGUI interface.
+9. Export a Markdown report or report bundle.
 
-## Required Plugins
+## Built-In Plugins And Support Modules
 
-| Plugin | Purpose | MVP Status |
+| Component | Purpose | Final status |
 | --- | --- | --- |
-| `hash_manifest` | MD5/SHA1/SHA256 and file manifest | Implemented |
+| `hash_manifest` | MD5/SHA1/SHA256 file manifest for indexed physical files | Implemented |
 | `file_type` | Magic-byte extension mismatch warnings | Implemented |
-| `keyword_search` | Built-in demo regex hits | Implemented |
-| `archive_index` | ZIP index and suspicious archive entry review | Implemented |
+| `keyword_search` | Built-in demo regex hits for text-like files | Implemented |
+| `archive_index` | ZIP index and suspicious archive entry-name review | Implemented |
 | `metadata_extract` | Image EXIF, PDF metadata, and DOCX core properties | Implemented |
-| `external_forensics` | ALEAPP, iLEAPP, and Hindsight adapters | Implemented optional feature |
-| `handoff` | Inspect exported Windows evidence directories from Evidence page | Implemented support feature |
-| `timeline` | Time-based artifact/report aggregation | Implemented through report aggregation |
-| `browser_history` | Chromium History parsing | Bonus/planned |
+| `external_forensics` | Manual ALEAPP, iLEAPP, and Hindsight adapter runs | Implemented optional feature |
+| `handoff` | Exported Windows directory inspection from the Evidence page | Implemented support feature |
+| `report` | Markdown report, timeline aggregation, optional manifest, and report bundle | Implemented |
 
-`timeline` may be implemented as artifact/report aggregation rather than a standalone plugin.
+There is no standalone Chromium History parser in the final release. Browser
+profile analysis is handled through the optional Hindsight external adapter.
 
 ## Capability Matrix
 
 | Capability | Implementation |
 | --- | --- |
-| Case creation | `cases` table and GUI |
-| Evidence import | `evidence_items` table and GUI |
-| Evidence scan | `evidence_files` scanner |
-| File manifest | `hash_manifest` |
-| MD5/SHA1/SHA256 | `hash_manifest` |
-| File size and timestamps | scanner |
-| File type identification | `file_type` |
+| Case creation, listing, and deletion | `cases` table and GUI |
+| Evidence import, scan, and deletion | `evidence_items`, `evidence_files`, scanner, and GUI |
+| File size and timestamp collection | scanner |
+| MD5/SHA1/SHA256 calculation | `hash_manifest` |
+| File manifest generation | `hash_manifest` |
+| Magic-byte file type detection | `file_type` |
 | Extension mismatch warning | `file_type` |
-| Keyword search | `keyword_search` |
-| Regex search | `keyword_search` |
+| Keyword and regex search | `keyword_search` |
 | Image EXIF metadata | `metadata_extract` |
 | PDF metadata | `metadata_extract` |
 | DOCX metadata | `metadata_extract` |
-| Archive listing | `archive_index` |
-| Exported Windows evidence intake | `handoff` core, evidence UI |
-| Artifact review | artifacts GUI page |
-| Timeline generation | report/UI artifact aggregation |
+| ZIP archive listing | `archive_index` |
+| Suspicious ZIP entry-name hints | `archive_index` |
+| Exported Windows evidence intake | `handoff` core and Evidence page |
+| Artifact review and filtering | Artifacts GUI page |
+| Timeline generation | Report aggregation over timestamped artifacts |
 | Markdown report export | report generator |
 | Portable report bundle export | report generator |
 | ALEAPP/iLEAPP/Hindsight external reports | `external_forensics` |
-| Chromium History | `browser_history`, bonus |
 
-## Degradation Rules
+## Boundaries
 
-- Day 7 is feature freeze.
-- If `browser_history` is incomplete by the end of Day 5, remove it from the live demo path and keep it as planned or experimental.
-- Archive recursion and extraction are not required for MVP. The current version indexes ZIP entries only.
-- Full file manifest in reports is optional and controlled by an export option.
-- External tool outputs are optional and copied into report bundles when present.
-- E01, partition, and filesystem parsing are out of scope for the MVP. Export files with a dedicated forensic tool first, then inspect/import the exported directory.
+- Evidence must be user-exported files, directories, or archives.
+- Raw disk image parsing, E01 parsing, partition parsing, and filesystem
+  reconstruction are out of scope.
+- Archive support is intentionally shallow. ZIP entries are indexed, but
+  archives are not extracted or recursively analyzed.
+- External adapters preserve and link external reports instead of importing all
+  external findings into the normalized artifact database.
+- Full file manifests in reports are optional because they can be large.
 
 ## Sample Evidence Policy
 
-The full sample evidence should not be committed to the repository. Store the sample externally and keep these files in the repo:
+The full sample evidence should not be committed to the repository. Store the
+sample externally and keep only lightweight notes in the repo:
 
 - sample download or handoff instructions
-- SHA256 of the sample archive
+- SHA256 of the sample archive when applicable
 - expected directory structure
 - expected findings
 - keywords used in the demonstration

@@ -17,7 +17,7 @@
 
 ## v1.0.0
 
-`v1.0.0` is the first formal coursework release of Hazelita Forensics
+`v1.0.0` is the formal coursework delivery release of Hazelita Forensics
 Workbench. It is designed for a repeatable local demonstration rather than a
 full professional forensic suite.
 
@@ -68,5 +68,5 @@ full professional forensic suite.
   external findings into the normalized artifact database.
 - Archive support is intentionally shallow; ZIP entries are indexed, but archive
   extraction and recursive archive analysis are not release requirements.
-- Chromium History parsing remains a bonus feature and should not block the
-  main demonstration flow.
+- Browser profile analysis is handled through the optional Hindsight external
+  adapter; there is no standalone Chromium History parser in this release.

@@ -86,12 +86,6 @@ Use `docs/PLUGIN_CONTACT.md` as the plugin contract reference.
 - Run tests: `uv run pytest`
 - Lint: `uv run ruff check .`
 
-## Deadline Discipline
-
-- Day 7 is feature freeze.
-- Chromium History is a bonus feature. If incomplete by Day 5, leave the interface placeholder and keep the main flow working.
-- Do not block the main flow for optional archive recursion, specialized artifact pages, or advanced report styling.
-
 ## Git Workflow
 
 - Follow `docs/CONTRIBUTING.md`.

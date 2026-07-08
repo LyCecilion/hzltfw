@@ -34,7 +34,6 @@
 
 - `file_type`
 - `metadata_extract`
-- `browser_history`
 
 ### 外部工具适配器
 
@@ -68,7 +67,9 @@ data: dict
 - `medium`：可疑发现，例如关键词命中、扩展名伪装。
 - `high`：演示故事线中的强关键发现。
 
-## 插件 PR 必须包含
+## 维护 PR 必须包含
+
+本项目不再接受 feature PR。如果维护性 PR 改动插件行为，必须包含：
 
 - 插件名称和用途。
 - 支持的输入。
