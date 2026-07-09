@@ -255,7 +255,7 @@ uv run pytest
 
 ## 🚢 Release
 
-Current release: `v1.1.0`.
+Current release: `v1.1.1`.
 
 See [docs/RELEASE_NOTES.md](docs/RELEASE_NOTES.md) for the release scope, demo path, and known boundaries.
 
