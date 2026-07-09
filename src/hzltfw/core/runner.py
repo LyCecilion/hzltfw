@@ -75,6 +75,7 @@ def run_plugins_for_evidence(
                 )
                 for artifact in artifacts
             )
+            _apply_artifact_side_effects(indexed_files, artifacts)
             run.status = "success"
         except Exception as exc:  # noqa: BLE001
             run.status = "failed"
@@ -127,3 +128,33 @@ def _to_artifact(
         tags_json=create.tags,
         data_json=create.data,
     )
+
+
+def _apply_artifact_side_effects(
+    indexed_files: list[EvidenceFile],
+    artifacts: list[ArtifactCreate],
+) -> None:
+    for artifact in artifacts:
+        if artifact.artifact_type == "hash.manifest":
+            _apply_hash_manifest(indexed_files, artifact)
+
+
+def _apply_hash_manifest(
+    indexed_files: list[EvidenceFile],
+    artifact: ArtifactCreate,
+) -> None:
+    manifest_files = artifact.data.get("files")
+    if not isinstance(manifest_files, list):
+        return
+
+    files_by_path = {file.relative_path: file for file in indexed_files}
+    for entry in manifest_files:
+        if not isinstance(entry, dict):
+            continue
+        relative_path = entry.get("relative_path")
+        sha256 = entry.get("sha256")
+        if not isinstance(relative_path, str) or not isinstance(sha256, str):
+            continue
+        indexed_file = files_by_path.get(relative_path)
+        if indexed_file is not None:
+            indexed_file.sha256 = sha256
