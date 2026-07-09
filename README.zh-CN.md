@@ -255,7 +255,7 @@ uv run pytest
 
 ## 🚢 发布
 
-当前正式版本：`v1.1.0`。
+当前正式版本：`v1.1.1`。
 
 发布范围、演示路径和已知边界见 [docs/RELEASE_NOTES.zh-CN.md](docs/RELEASE_NOTES.zh-CN.md)。
 
