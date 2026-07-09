@@ -13,6 +13,7 @@ from hzltfw.core.records import delete_case_record, delete_evidence_record
 from hzltfw.core.report import export_case_markdown
 from hzltfw.core.runner import run_plugins_for_evidence
 from hzltfw.core.scanner import scan_evidence
+from hzltfw.utils.hashing import hash_file
 
 EXPECTED_FILE_COUNT = 7
 EXPECTED_DEFAULT_PLUGIN_COUNT = 5
@@ -64,6 +65,13 @@ def test_vertical_slice(tmp_path: Path) -> None:
         artifacts = list(session.exec(select(Artifact)))
         _assert_artifacts(artifacts)
 
+        indexed_files = list(
+            session.exec(
+                select(EvidenceFile).where(EvidenceFile.evidence_id == evidence.id),
+            ),
+        )
+        assert all(file.sha256 for file in indexed_files)
+
         assert session.exec(select(EvidenceFile)).first() is not None
         assert session.exec(select(PluginRun)).first() is not None
 
@@ -75,6 +83,7 @@ def test_vertical_slice(tmp_path: Path) -> None:
         )
 
     report = report_path.read_text(encoding="utf-8")
+    assert hash_file(evidence_dir / "notes.txt")["sha256"] in report
     assert "电子数据取证分析报告" in report
     assert "hash_manifest" in report
     assert "file_type" in report
