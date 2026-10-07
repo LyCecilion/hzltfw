@@ -355,3 +355,6 @@ $RECYCLE.BIN/
 hzltfw.db
 reports/
 sample_evidence/
+
+# direnv
+.direnv/
